@@ -9,6 +9,7 @@ import { configureCommonModules } from '@affine/core/modules';
 import {
   AuthService,
   DefaultServerService,
+  ServersService,
   ValidatorProvider,
   WebSocketAuthProvider,
 } from '@affine/core/modules/cloud';
@@ -22,6 +23,7 @@ import {
   configureBrowserWorkspaceFlavours,
   configureIndexedDBWorkspaceEngineStorageProvider,
 } from '@affine/core/modules/workspace-engine';
+import { I18n } from '@affine/i18n';
 import { App as CapacitorApp } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { Haptics } from '@capacitor/haptics';
@@ -30,6 +32,7 @@ import {
   Framework,
   FrameworkRoot,
   getCurrentStore,
+  GlobalContextService,
   LifecycleService,
 } from '@toeverything/infra';
 import { Suspense } from 'react';
@@ -110,6 +113,21 @@ framework.impl(HapticProvider, {
   selectionEnd: () => Haptics.selectionEnd(),
 });
 const frameworkProvider = framework.provider();
+
+// ------ some apis for native ------
+(window as any).getCurrentServerBaseUrl = () => {
+  const globalContextService = frameworkProvider.get(GlobalContextService);
+  const currentServerId = globalContextService.globalContext.serverId.get();
+  const serversService = frameworkProvider.get(ServersService);
+  const defaultServerService = frameworkProvider.get(DefaultServerService);
+  const currentServer =
+    (currentServerId ? serversService.server$(currentServerId).value : null) ??
+    defaultServerService.server;
+  return currentServer.baseUrl;
+};
+(window as any).getCurrentI18nLocale = () => {
+  return I18n.language;
+};
 
 // setup application lifecycle events, and emit application start event
 window.addEventListener('focus', () => {
