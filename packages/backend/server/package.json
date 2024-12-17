@@ -9,15 +9,14 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node --loader ts-node/esm/transpile-only.mjs ./src/index.ts",
     "dev": "nodemon ./src/index.ts",
     "test": "ava --concurrency 1 --serial",
     "test:copilot": "ava \"tests/**/copilot-*.spec.ts\"",
     "test:coverage": "c8 ava --concurrency 1 --serial",
     "test:copilot:coverage": "c8 ava --timeout=5m \"tests/**/copilot-*.spec.ts\"",
-    "postinstall": "prisma generate",
-    "data-migration": "NODE_ENV=script node --loader ts-node/esm/transpile-only.mjs ./src/data/index.ts",
-    "predeploy": "yarn prisma migrate deploy && node --import ./scripts/register.js ./dist/data/index.js run"
+    "data-migration": "NODE_ENV=script node ./src/data/index.ts",
+    "predeploy": "yarn prisma migrate deploy && node --import ./scripts/register.js ./dist/data/index.js run",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@apollo/server": "^4.11.2",
@@ -119,10 +118,7 @@
     },
     "workerThreads": false,
     "nodeArguments": [
-      "--trace-sigint",
-      "--loader",
-      "ts-node/esm/transpile-only.mjs",
-      "--es-module-specifier-resolution=node"
+      "--trace-sigint"
     ],
     "watchMode": {
       "ignoreChanges": [
@@ -139,7 +135,6 @@
       "./src/prelude.ts"
     ],
     "environmentVariables": {
-      "TS_NODE_PROJECT": "./tests/tsconfig.json",
       "NODE_ENV": "test",
       "MAILER_HOST": "0.0.0.0",
       "MAILER_PORT": "1025",
@@ -152,12 +147,6 @@
   },
   "nodemonConfig": {
     "exec": "node",
-    "script": "./src/index.ts",
-    "nodeArgs": [
-      "--loader",
-      "ts-node/esm.mjs",
-      "--es-module-specifier-resolution=node"
-    ],
     "ignore": [
       "**/__tests__/**",
       "**/dist/**",
@@ -166,8 +155,6 @@
     "env": {
       "NODE_ENV": "development",
       "AFFINE_SERVER_EXTERNAL_URL": "http://localhost:8080",
-      "TS_NODE_TRANSPILE_ONLY": true,
-      "TS_NODE_PROJECT": "./tsconfig.json",
       "DEBUG": "affine:*",
       "FORCE_COLOR": true,
       "DEBUG_COLORS": true

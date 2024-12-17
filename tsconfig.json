@@ -52,7 +52,6 @@
       "@affine/admin/components/ui/*": [
         "./packages/frontend/admin/src/components/ui/*"
       ],
-      "@affine/cli/*": ["./tools/cli/src/*"],
       "@affine/server/*": ["./packages/backend/server/src/*"],
       "@affine/component": ["./packages/frontend/component/src/index"],
       "@affine/component/*": [
@@ -139,6 +138,9 @@
       "path": "./tools/cli"
     },
     {
+      "path": "./tools/utils"
+    },
+    {
       "path": "./tools/playstore-auto-bump"
     },
     // Tests
@@ -160,19 +162,8 @@
     // Blocksuite
     {
       "path": "./blocksuite"
-    },
-    // Others
-    {
-      "path": "./tsconfig.node.json"
     }
   ],
   "files": [],
-  "exclude": ["node_modules", "target", "lib", "test-results", "dist"],
-  "ts-node": {
-    "esm": true,
-    "compilerOptions": {
-      "module": "ESNext",
-      "moduleResolution": "Node"
-    }
-  }
+  "exclude": ["node_modules", "target", "lib", "test-results", "dist"]
 }

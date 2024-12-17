@@ -1,32 +1,46 @@
 import type { BUILD_CONFIG_TYPE } from '@affine/env/global';
+import type { Package } from '@affine-tools/utils/workspace';
 
-import packageJson from '../../package.json' with { type: 'json' };
-import type { BuildFlags } from '../config';
+import { PackageToDistribution } from './distribution';
 
-export function getBuildConfig(buildFlags: BuildFlags): BUILD_CONFIG_TYPE {
+export interface BuildFlags {
+  channel: 'stable' | 'beta' | 'internal' | 'canary';
+  mode: 'development' | 'production';
+}
+
+export function getBuildConfig(
+  pkg: Package,
+  buildFlags: BuildFlags
+): BUILD_CONFIG_TYPE {
+  const distribution = PackageToDistribution.get(pkg.name);
+
+  if (!distribution) {
+    throw new Error(`Distribution for ${pkg.name} is not found`);
+  }
+
   const buildPreset: Record<BuildFlags['channel'], BUILD_CONFIG_TYPE> = {
     get stable() {
       return {
         debug: buildFlags.mode === 'development',
-        distribution: buildFlags.distribution,
+        distribution,
         isDesktopEdition: (
-          ['web', 'desktop', 'admin'] as BuildFlags['distribution'][]
-        ).includes(buildFlags.distribution),
+          ['web', 'desktop', 'admin'] as BUILD_CONFIG_TYPE['distribution'][]
+        ).includes(distribution),
         isMobileEdition: (
-          ['mobile', 'ios', 'android'] as BuildFlags['distribution'][]
-        ).includes(buildFlags.distribution),
-        isElectron: buildFlags.distribution === 'desktop',
-        isWeb: buildFlags.distribution === 'web',
-        isMobileWeb: buildFlags.distribution === 'mobile',
-        isIOS: buildFlags.distribution === 'ios',
-        isAndroid: buildFlags.distribution === 'android',
-        isAdmin: buildFlags.distribution === 'admin',
+          ['mobile', 'ios', 'android'] as BUILD_CONFIG_TYPE['distribution'][]
+        ).includes(distribution),
+        isElectron: distribution === 'desktop',
+        isWeb: distribution === 'web',
+        isMobileWeb: distribution === 'mobile',
+        isIOS: distribution === 'ios',
+        isAndroid: distribution === 'android',
+        isAdmin: distribution === 'admin',
 
         isSelfHosted: process.env.SELF_HOSTED === 'true',
         appBuildType: 'stable' as const,
         serverUrlPrefix: 'https://app.affine.pro',
-        appVersion: packageJson.version,
-        editorVersion: packageJson.devDependencies['@blocksuite/affine'],
+        appVersion: pkg.version,
+        editorVersion: pkg.dependencies['@blocksuite/affine'],
         githubUrl: 'https://github.com/toeverything/AFFiNE',
         changelogUrl: 'https://affine.pro/what-is-new',
         downloadUrl: 'https://affine.pro/download',

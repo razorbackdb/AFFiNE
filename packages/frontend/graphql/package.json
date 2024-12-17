@@ -21,7 +21,7 @@
     "vitest": "2.1.8"
   },
   "scripts": {
-    "postinstall": "gql-gen --errors-only"
+    "build": "gql-gen --errors-only"
   },
   "dependencies": {
     "@affine/env": "workspace:*",

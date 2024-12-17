@@ -1,32 +1,33 @@
-import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
-import type { BUILD_CONFIG_TYPE } from '@affine/env/global';
+import { getBuildConfig } from '@affine-tools/utils/build-config';
+import { ProjectRoot } from '@affine-tools/utils/path';
+import type { Package } from '@affine-tools/utils/workspace';
 import { PerfseePlugin } from '@perfsee/webpack';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import { VanillaExtractPlugin } from '@vanilla-extract/webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
-import { compact } from 'lodash-es';
+import compact from 'lodash-es/compact';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 
-import { projectRoot } from '../config/cwd.cjs';
-import type { BuildFlags } from '../config/index.js';
 import { productionCacheGroups } from './cache-group.js';
+import { createHTMLPlugins, createShellHTMLPlugin } from './html-plugin.js';
 import { WebpackS3Plugin } from './s3-plugin.js';
+import type { BuildFlags } from './types';
+
+const require = createRequire(import.meta.url);
+const cssnano = require('cssnano');
 
 const IN_CI = !!process.env.CI;
 
-export const rootPath = join(fileURLToPath(import.meta.url), '..', '..');
-export const workspaceRoot = join(rootPath, '..', '..', '..');
-
 const OptimizeOptionOptions: (
-  buildFlags: BuildFlags
-) => webpack.Configuration['optimization'] = buildFlags => ({
-  minimize: buildFlags.mode === 'production',
+  flags: BuildFlags
+) => webpack.Configuration['optimization'] = flags => ({
+  minimize: flags.mode === 'production',
   minimizer: [
     new TerserPlugin({
       minify: TerserPlugin.swcMinify,
@@ -60,45 +61,22 @@ const OptimizeOptionOptions: (
   },
 });
 
-export const getPublicPath = (buildFlags: BuildFlags) => {
-  const { BUILD_TYPE } = process.env;
-  if (typeof process.env.PUBLIC_PATH === 'string') {
-    return process.env.PUBLIC_PATH;
-  }
+export function createWebpackConfig(
+  pkg: Package,
+  flags: BuildFlags
+): webpack.Configuration {
+  const buildConfig = getBuildConfig(pkg, flags);
 
-  if (
-    buildFlags.mode === 'development' ||
-    process.env.COVERAGE ||
-    buildFlags.distribution === 'desktop' ||
-    buildFlags.distribution === 'ios' ||
-    buildFlags.distribution === 'android'
-  ) {
-    return '/';
-  }
-
-  switch (BUILD_TYPE) {
-    case 'stable':
-      return 'https://prod.affineassets.com/';
-    case 'beta':
-      return 'https://beta.affineassets.com/';
-    default:
-      return 'https://dev.affineassets.com/';
-  }
-};
-
-export const createConfiguration: (
-  cwd: string,
-  buildFlags: BuildFlags,
-  buildConfig: BUILD_CONFIG_TYPE
-) => webpack.Configuration = (cwd, buildFlags, buildConfig) => {
   const config = {
     name: 'affine',
-    // to set a correct base path for the source map
-    context: cwd,
+    context: pkg.path.value,
     experiments: {
       topLevelAwait: true,
       outputModule: false,
       syncWebAssembly: true,
+    },
+    entry: {
+      app: pkg.entry ?? './src/index.tsx',
     },
     output: {
       environment: {
@@ -106,25 +84,25 @@ export const createConfiguration: (
         dynamicImport: true,
       },
       filename:
-        buildFlags.mode === 'production'
+        flags.mode === 'production'
           ? 'js/[name].[contenthash:8].js'
           : 'js/[name].js',
       // In some cases webpack will emit files starts with "_" which is reserved in web extension.
       chunkFilename: pathData =>
         pathData.chunk?.name?.endsWith?.('worker')
           ? 'js/[name].[contenthash:8].js'
-          : buildFlags.mode === 'production'
+          : flags.mode === 'production'
             ? 'js/chunk.[name].[contenthash:8].js'
             : 'js/chunk.[name].js',
       assetModuleFilename:
-        buildFlags.mode === 'production'
+        flags.mode === 'production'
           ? 'assets/[name].[contenthash:8][ext][query]'
           : '[name].[contenthash:8][ext]',
       devtoolModuleFilenameTemplate: 'webpack://[namespace]/[resource-path]',
       hotUpdateChunkFilename: 'hot/[id].[fullhash].js',
       hotUpdateMainFilename: 'hot/[runtime].[fullhash].json',
-      path: join(cwd, 'dist'),
-      clean: buildFlags.mode === 'production',
+      path: pkg.distPath.value,
+      clean: flags.mode === 'production',
       globalObject: 'globalThis',
       // NOTE(@forehalo): always keep it '/'
       publicPath: '/',
@@ -132,10 +110,10 @@ export const createConfiguration: (
     },
     target: ['web', 'es2022'],
 
-    mode: buildFlags.mode,
+    mode: flags.mode,
 
     devtool:
-      buildFlags.mode === 'production'
+      flags.mode === 'production'
         ? 'source-map'
         : 'eval-cheap-module-source-map',
 
@@ -147,14 +125,13 @@ export const createConfiguration: (
       },
       extensions: ['.js', '.ts', '.tsx'],
       alias: {
-        yjs: join(workspaceRoot, 'node_modules', 'yjs'),
-        lit: join(workspaceRoot, 'node_modules', 'lit'),
-        '@preact/signals-core': join(
-          workspaceRoot,
+        yjs: ProjectRoot.join('node_modules', 'yjs').value,
+        lit: ProjectRoot.join('node_modules', 'lit').value,
+        '@preact/signals-core': ProjectRoot.join(
           'node_modules',
           '@preact',
           'signals-core'
-        ),
+        ).value,
       },
     },
 
@@ -230,7 +207,7 @@ export const createConfiguration: (
                   transform: {
                     react: {
                       runtime: 'automatic',
-                      refresh: buildFlags.mode === 'development' && {
+                      refresh: flags.mode === 'development' && {
                         refreshReg: '$RefreshReg$',
                         refreshSig: '$RefreshSig$',
                         emitFullSignatures: true,
@@ -263,7 +240,7 @@ export const createConfiguration: (
             {
               test: /\.css$/,
               use: [
-                buildFlags.mode === 'development'
+                flags.mode === 'development'
                   ? 'style-loader'
                   : MiniCssExtractPlugin.loader,
                 {
@@ -280,7 +257,25 @@ export const createConfiguration: (
                   loader: 'postcss-loader',
                   options: {
                     postcssOptions: {
-                      config: join(rootPath, 'webpack', 'postcss.config.cjs'),
+                      plugins: [
+                        cssnano({
+                          preset: [
+                            'default',
+                            {
+                              convertValues: false,
+                            },
+                          ],
+                        }),
+                      ].concat(
+                        pkg.join('tailwind.config.js').exists()
+                          ? [
+                              require('tailwindcss')(
+                                require(pkg.join('tailwind.config.js').path)
+                              ),
+                              'autoprefixer',
+                            ]
+                          : []
+                      ),
                     },
                   },
                 },
@@ -292,7 +287,7 @@ export const createConfiguration: (
     },
     plugins: compact([
       IN_CI ? null : new webpack.ProgressPlugin({ percentBy: 'entries' }),
-      buildFlags.mode === 'development'
+      flags.mode === 'development'
         ? new ReactRefreshWebpackPlugin({
             overlay: false,
             esModule: true,
@@ -305,7 +300,7 @@ export const createConfiguration: (
           }),
       new VanillaExtractPlugin(),
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(buildFlags.mode),
+        'process.env.NODE_ENV': JSON.stringify(flags.mode),
         'process.env.CAPTCHA_SITE_KEY': JSON.stringify(
           process.env.CAPTCHA_SITE_KEY
         ),
@@ -323,24 +318,19 @@ export const createConfiguration: (
           {} as Record<string, string>
         ),
       }),
-      buildFlags.distribution === 'admin'
+      buildConfig.isAdmin
         ? null
         : new CopyPlugin({
             patterns: [
               {
                 // copy the shared public assets into dist
-                from: join(
-                  workspaceRoot,
-                  'packages',
-                  'frontend',
-                  'core',
-                  'public'
-                ),
-                to: join(cwd, 'dist'),
+                from: pkg.workspace.getPackage('@affine/core').join('public')
+                  .value,
+                to: pkg.distPath.value,
               },
             ],
           }),
-      buildFlags.mode === 'production' &&
+      flags.mode === 'production' &&
       (buildConfig.isWeb || buildConfig.isMobileWeb || buildConfig.isAdmin) &&
       process.env.R2_SECRET_ACCESS_KEY
         ? new WebpackS3Plugin()
@@ -349,34 +339,22 @@ export const createConfiguration: (
     stats: {
       errorDetails: true,
     },
-
-    optimization: OptimizeOptionOptions(buildFlags),
-
+    optimization: OptimizeOptionOptions(flags),
     devServer: {
       host: '0.0.0.0',
       allowedHosts: 'all',
-      hot: buildFlags.static ? false : 'only',
-      liveReload: !buildFlags.static,
+      hot: true,
+      liveReload: true,
       client: {
         overlay: process.env.DISABLE_DEV_OVERLAY === 'true' ? false : undefined,
       },
       historyApiFallback: true,
       static: [
         {
-          directory: join(
-            projectRoot,
-            'packages',
-            'frontend',
-            'core',
-            'public'
-          ),
+          directory: pkg.workspace.getPackage('@affine/core').join('public')
+            .value,
           publicPath: '/',
-          watch: !buildFlags.static,
-        },
-        {
-          directory: join(cwd, 'public'),
-          publicPath: '/',
-          watch: !buildFlags.static,
+          watch: true,
         },
       ],
       proxy: [
@@ -393,7 +371,7 @@ export const createConfiguration: (
     } as DevServerConfiguration,
   } satisfies webpack.Configuration;
 
-  if (buildFlags.mode === 'production' && process.env.PERFSEE_TOKEN) {
+  if (flags.mode === 'production' && process.env.PERFSEE_TOKEN) {
     config.plugins.push(
       new PerfseePlugin({
         project: 'affine-toeverything',
@@ -401,7 +379,7 @@ export const createConfiguration: (
     );
   }
 
-  if (buildFlags.mode === 'development') {
+  if (flags.mode === 'development') {
     config.optimization = {
       ...config.optimization,
       minimize: false,
@@ -445,5 +423,11 @@ export const createConfiguration: (
     );
   }
 
+  config.plugins = config.plugins.concat(createHTMLPlugins(flags, buildConfig));
+
+  if (buildConfig.isElectron) {
+    config.plugins.push(createShellHTMLPlugin(flags, buildConfig));
+  }
+
   return config;
-};
+}

@@ -14,10 +14,7 @@
       "path": "../debug"
     },
     {
-      "path": "../../../blocksuite/tsconfig.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
+      "path": "../../../blocksuite"
     }
   ]
 }

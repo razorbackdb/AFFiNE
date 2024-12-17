@@ -62,7 +62,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "scripts": {
-    "build": "cross-env DISTRIBUTION=admin yarn workspace @affine/cli bundle",
+    "build": "affine bundle",
+    "dev": "affine bundle --dev",
     "update-shadcn": "shadcn-ui add -p src/components/ui"
   },
   "exports": {

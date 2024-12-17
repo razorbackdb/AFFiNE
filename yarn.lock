@@ -92,6 +92,64 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@affine-tools/cli@workspace:*, @affine-tools/cli@workspace:tools/cli":
+  version: 0.0.0-use.local
+  resolution: "@affine-tools/cli@workspace:tools/cli"
+  dependencies:
+    "@affine-tools/utils": "workspace:*"
+    "@aws-sdk/client-s3": "npm:^3.709.0"
+    "@clack/core": "npm:^0.4.0"
+    "@clack/prompts": "npm:^0.9.0"
+    "@napi-rs/simple-git": "npm:^0.1.19"
+    "@perfsee/webpack": "npm:^1.13.0"
+    "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.15"
+    "@sentry/webpack-plugin": "npm:^2.22.7"
+    "@types/lodash-es": "npm:^4.17.12"
+    "@types/mime-types": "npm:^2.1.4"
+    "@types/node": "npm:^20.17.10"
+    "@types/webpack-env": "npm:^1.18.5"
+    "@vanilla-extract/webpack-plugin": "npm:^2.3.15"
+    autoprefixer: "npm:^10.4.20"
+    clipanion: "npm:^3.2.1"
+    copy-webpack-plugin: "npm:^12.0.2"
+    css-loader: "npm:^7.1.2"
+    cssnano: "npm:^7.0.6"
+    html-webpack-plugin: "npm:^5.6.3"
+    lodash-es: "npm:^4.17.21"
+    mime-types: "npm:^2.1.35"
+    mini-css-extract-plugin: "npm:^2.9.2"
+    postcss: "npm:^8.4.49"
+    postcss-loader: "npm:^8.1.1"
+    prettier: "npm:^3.4.2"
+    react-refresh: "npm:^0.16.0"
+    source-map-loader: "npm:^5.0.0"
+    style-loader: "npm:^4.0.0"
+    swc-loader: "npm:^0.2.6"
+    tailwindcss: "npm:^3.4.16"
+    terser-webpack-plugin: "npm:^5.3.10"
+    ts-node: "npm:^10.9.2"
+    typanion: "npm:^3.14.0"
+    typescript: "npm:^5.5.4"
+    webpack: "npm:^5.97.1"
+    webpack-dev-server: "npm:^5.2.0"
+    webpack-merge: "npm:^6.0.1"
+  bin:
+    r: ./bin/runner.js
+  languageName: unknown
+  linkType: soft
+
+"@affine-tools/utils@workspace:*, @affine-tools/utils@workspace:tools/utils":
+  version: 0.0.0-use.local
+  resolution: "@affine-tools/utils@workspace:tools/utils"
+  dependencies:
+    "@types/lodash-es": "npm:^4.17.12"
+    "@types/node": "npm:^20.17.10"
+    chalk: "npm:^5.3.0"
+    lodash-es: "npm:^4.17.21"
+    typescript: "npm:^5.5.4"
+  languageName: unknown
+  linkType: soft
+
 "@affine/admin@workspace:packages/frontend/admin":
   version: 0.0.0-use.local
   resolution: "@affine/admin@workspace:packages/frontend/admin"
@@ -177,17 +235,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@affine/bump-blocksuite@workspace:tools/bump-blocksuite":
-  version: 0.0.0-use.local
-  resolution: "@affine/bump-blocksuite@workspace:tools/bump-blocksuite"
-  dependencies:
-    "@napi-rs/clipboard": "npm:^1.1.2"
-    "@napi-rs/simple-git": "npm:^0.1.19"
-    chalk: "npm:^5.3.0"
-    undici: "npm:^7.1.0"
-  languageName: unknown
-  linkType: soft
-
 "@affine/changelog@workspace:tools/changelog":
   version: 0.0.0-use.local
   resolution: "@affine/changelog@workspace:tools/changelog"
@@ -198,49 +245,6 @@ __metadata:
     changelogithub: "npm:^0.13.11"
     jsx-slack: "npm:^6.1.2"
     marked: "npm:^15.0.3"
-  languageName: unknown
-  linkType: soft
-
-"@affine/cli@workspace:*, @affine/cli@workspace:tools/cli":
-  version: 0.0.0-use.local
-  resolution: "@affine/cli@workspace:tools/cli"
-  dependencies:
-    "@affine/env": "workspace:*"
-    "@affine/templates": "workspace:*"
-    "@aws-sdk/client-s3": "npm:^3.709.0"
-    "@blocksuite/affine": "workspace:*"
-    "@clack/core": "npm:^0.4.0"
-    "@clack/prompts": "npm:^0.9.0"
-    "@magic-works/i18n-codegen": "npm:^0.6.1"
-    "@napi-rs/simple-git": "npm:^0.1.19"
-    "@perfsee/webpack": "npm:^1.13.0"
-    "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.15"
-    "@sentry/webpack-plugin": "npm:^2.22.7"
-    "@types/mime-types": "npm:^2.1.4"
-    "@types/webpack-env": "npm:^1.18.5"
-    "@vanilla-extract/webpack-plugin": "npm:^2.3.15"
-    autoprefixer: "npm:^10.4.20"
-    copy-webpack-plugin: "npm:^12.0.2"
-    css-loader: "npm:^7.1.2"
-    cssnano: "npm:^7.0.6"
-    dotenv: "npm:^16.4.7"
-    html-webpack-plugin: "npm:^5.6.3"
-    lodash-es: "npm:^4.17.21"
-    mime-types: "npm:^2.1.35"
-    mini-css-extract-plugin: "npm:^2.9.2"
-    postcss: "npm:^8.4.49"
-    postcss-loader: "npm:^8.1.1"
-    react-refresh: "npm:^0.16.0"
-    source-map-loader: "npm:^5.0.0"
-    style-loader: "npm:^4.0.0"
-    swc-loader: "npm:^0.2.6"
-    tailwindcss: "npm:^3.4.16"
-    terser-webpack-plugin: "npm:^5.3.10"
-    ts-node: "npm:^10.9.2"
-    vite: "npm:^6.0.3"
-    webpack: "npm:^5.97.1"
-    webpack-dev-server: "npm:^5.2.0"
-    webpack-merge: "npm:^6.0.1"
   languageName: unknown
   linkType: soft
 
@@ -258,7 +262,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@affine/component@workspace:packages/frontend/component"
   dependencies:
-    "@affine/cli": "workspace:*"
     "@affine/debug": "workspace:*"
     "@affine/electron-api": "workspace:*"
     "@affine/graphql": "workspace:*"
@@ -459,6 +462,7 @@ __metadata:
   resolution: "@affine/electron@workspace:packages/frontend/apps/electron"
   dependencies:
     "@affine-test/kit": "workspace:*"
+    "@affine-tools/utils": "workspace:*"
     "@affine/component": "workspace:*"
     "@affine/core": "workspace:*"
     "@affine/electron-api": "workspace:*"
@@ -619,7 +623,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@affine/monorepo@workspace:."
   dependencies:
-    "@affine/cli": "workspace:*"
+    "@affine-tools/cli": "workspace:*"
     "@capacitor/cli": "npm:^6.2.0"
     "@eslint/js": "npm:^9.16.0"
     "@faker-js/faker": "npm:^9.3.0"
@@ -706,6 +710,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@affine/playstore-auto-bump@workspace:tools/playstore-auto-bump"
   dependencies:
+    "@affine-tools/utils": "workspace:*"
     "@googleapis/androidpublisher": "npm:^22.0.0"
     "@oxc-node/core": "npm:^0.0.16"
     "@types/node": "npm:^20.17.10"
@@ -7496,115 +7501,6 @@ __metadata:
     napi: ./dist/cli.js
     napi-raw: ./cli.mjs
   checksum: 10/455cce2d09f673a2506cac5f515e1e592354ff35473072e4a5bbbe3c9afbeab3a4c10e2b262890345cb15ed4581fd9b8ff41fcfd3eeba5e4d9b922d8bd99fbc7
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-darwin-arm64@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-darwin-arm64@npm:1.1.2"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-darwin-x64@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-darwin-x64@npm:1.1.2"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-linux-arm-gnueabihf@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-linux-arm-gnueabihf@npm:1.1.2"
-  conditions: os=linux & cpu=arm
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-linux-arm64-gnu@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-linux-arm64-gnu@npm:1.1.2"
-  conditions: os=linux & cpu=arm64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-linux-arm64-musl@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-linux-arm64-musl@npm:1.1.2"
-  conditions: os=linux & cpu=arm64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-linux-x64-gnu@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-linux-x64-gnu@npm:1.1.2"
-  conditions: os=linux & cpu=x64 & libc=glibc
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-linux-x64-musl@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-linux-x64-musl@npm:1.1.2"
-  conditions: os=linux & cpu=x64 & libc=musl
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-win32-arm64-msvc@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-win32-arm64-msvc@npm:1.1.2"
-  conditions: os=win32 & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-win32-ia32-msvc@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-win32-ia32-msvc@npm:1.1.2"
-  conditions: os=win32 & cpu=ia32
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard-win32-x64-msvc@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard-win32-x64-msvc@npm:1.1.2"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@napi-rs/clipboard@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "@napi-rs/clipboard@npm:1.1.2"
-  dependencies:
-    "@napi-rs/clipboard-darwin-arm64": "npm:1.1.2"
-    "@napi-rs/clipboard-darwin-x64": "npm:1.1.2"
-    "@napi-rs/clipboard-linux-arm-gnueabihf": "npm:1.1.2"
-    "@napi-rs/clipboard-linux-arm64-gnu": "npm:1.1.2"
-    "@napi-rs/clipboard-linux-arm64-musl": "npm:1.1.2"
-    "@napi-rs/clipboard-linux-x64-gnu": "npm:1.1.2"
-    "@napi-rs/clipboard-linux-x64-musl": "npm:1.1.2"
-    "@napi-rs/clipboard-win32-arm64-msvc": "npm:1.1.2"
-    "@napi-rs/clipboard-win32-ia32-msvc": "npm:1.1.2"
-    "@napi-rs/clipboard-win32-x64-msvc": "npm:1.1.2"
-  dependenciesMeta:
-    "@napi-rs/clipboard-darwin-arm64":
-      optional: true
-    "@napi-rs/clipboard-darwin-x64":
-      optional: true
-    "@napi-rs/clipboard-linux-arm-gnueabihf":
-      optional: true
-    "@napi-rs/clipboard-linux-arm64-gnu":
-      optional: true
-    "@napi-rs/clipboard-linux-arm64-musl":
-      optional: true
-    "@napi-rs/clipboard-linux-x64-gnu":
-      optional: true
-    "@napi-rs/clipboard-linux-x64-musl":
-      optional: true
-    "@napi-rs/clipboard-win32-arm64-msvc":
-      optional: true
-    "@napi-rs/clipboard-win32-ia32-msvc":
-      optional: true
-    "@napi-rs/clipboard-win32-x64-msvc":
-      optional: true
-  checksum: 10/858e0600409787ba8e3c823afb8b1cc8ea44bd096d223477bd2405298c95e3f0c3a717fc2dbb61b67553b19e887abf340112d484994339096f396bdb0a1e385c
   languageName: node
   linkType: hard
 
@@ -17586,14 +17482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^5.0.0, chalk@npm:^5.0.1, chalk@npm:^5.3.0":
-  version: 5.4.1
-  resolution: "chalk@npm:5.4.1"
-  checksum: 10/29df3ffcdf25656fed6e95962e2ef86d14dfe03cd50e7074b06bad9ffbbf6089adbb40f75c00744d843685c8d008adaf3aed31476780312553caf07fa86e5bc7
-  languageName: node
-  linkType: hard
-
-"chalk@npm:~5.3.0":
+"chalk@npm:^5.0.0, chalk@npm:^5.0.1, chalk@npm:^5.3.0, chalk@npm:~5.3.0":
   version: 5.3.0
   resolution: "chalk@npm:5.3.0"
   checksum: 10/6373caaab21bd64c405bfc4bd9672b145647fc9482657b5ea1d549b3b2765054e9d3d928870cdf764fb4aad67555f5061538ff247b8310f110c5c888d92397ea
@@ -33095,7 +32984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5, typescript@npm:^5.3.3, typescript@npm:^5.4.3, typescript@npm:^5.7.2":
+"typescript@npm:^5, typescript@npm:^5.3.3, typescript@npm:^5.4.3, typescript@npm:^5.5.4, typescript@npm:^5.7.2":
   version: 5.7.2
   resolution: "typescript@npm:5.7.2"
   bin:
@@ -33115,7 +33004,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.7.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.5.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.7.2#optional!builtin<compat/typescript>":
   version: 5.7.2
   resolution: "typescript@patch:typescript@npm%3A5.7.2#optional!builtin<compat/typescript>::version=5.7.2&hash=5786d5"
   bin:

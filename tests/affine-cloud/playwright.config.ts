@@ -26,9 +26,12 @@ const config: PlaywrightTestConfig = {
   retries: process.env.COPILOT ? 1 : 3,
   reporter: process.env.CI ? 'github' : 'list',
   webServer: [
-    // Intentionally not building the web, reminds you to run it by yourself.
     {
-      command: 'yarn -T run start:web-static',
+      // TODO(@forehalo):
+      //   in ci, all the target will be built,
+      //   we could download the builds from archives
+      //   and then run the web with simple http serve, it's will be faster
+      command: 'yarn run -T affine dev -p @affine/web',
       port: 8080,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
@@ -37,12 +40,10 @@ const config: PlaywrightTestConfig = {
       },
     },
     {
-      command: 'yarn workspace @affine/server start',
+      command: 'yarn run -T affine dev -p @affine/server',
       port: 3010,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
-      stdout: 'pipe',
-      stderr: 'pipe',
       env: {
         DATABASE_URL:
           process.env.DATABASE_URL ??

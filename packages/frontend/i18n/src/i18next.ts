@@ -3,7 +3,7 @@ import type { BackendModule, i18n } from 'i18next';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import type { useAFFiNEI18N } from './i18n-generated';
+import type { useAFFiNEI18N } from './i18n.gen';
 import type { Language } from './resources';
 import { SUPPORTED_LANGUAGES } from './resources';
 

@@ -68,7 +68,7 @@ jobs:
       - name: Setup @sentry/cli
         uses: ./.github/actions/setup-sentry
       - name: Build Mobile
-        run: yarn workspace @affine/ios build
+        run: yarn affine @affine/ios build
         env:
           PUBLIC_PATH: '/'
           MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
@@ -101,7 +101,7 @@ jobs:
       - name: Setup @sentry/cli
         uses: ./.github/actions/setup-sentry
       - name: Build Mobile
-        run: yarn workspace @affine/android build
+        run: yarn affine @affine/android build
         env:
           PUBLIC_PATH: '/'
           MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
@@ -216,7 +216,7 @@ jobs:
       - name: Auto increment version code
         id: bump
         if: ${{ env.BUILD_TARGET == 'distribution' }}
-        run: yarn workspace @affine/playstore-auto-bump bump
+        run: yarn affine @affine/playstore-auto-bump bump
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
       - name: Build

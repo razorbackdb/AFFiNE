@@ -5,13 +5,40 @@
     "correctness": "error",
     "perf": "error"
   },
-  "ignorePatterns": ["tools/cli/src/webpack/error-handler.js"],
+  "ignorePatterns": [
+    "**/node_modules",
+    ".yarn",
+    ".github",
+    ".vscode",
+    ".yarnrc.yml",
+    ".coverage",
+    ".nx/**",
+    "target",
+    "test-results",
+    "**/dist",
+    "**/lib",
+    "**/storybook-static",
+    "**/web-static",
+    "**/public",
+    "**/e2e-dist-*",
+    "**/static",
+    "**/*.gen.ts",
+    "**/*.gql",
+    "**/*.d.ts",
+    "tools/cli/src/webpack/error-handler.js",
+    "packages/backend/native/index.d.ts",
+    "packages/frontend/native/index.d.ts",
+    "packages/frontend/native/index.js",
+    "packages/frontend/graphql/src/graphql/index.ts",
+    "packages/frontend/apps/android/App/app/build/**",
+    "blocksuite/tests-legacy/snapshots",
+    "**/.storybook"
+  ],
   "rules": {
     "import/named": "allow",
     "no-await-in-loop": "allow",
     "promise/no-callback-in-promise": "allow",
     "typescript/ban-types": "allow",
-
     "array-callback-return": "error",
     "constructor-super": "error",
     "eqeqeq": ["error", "smart"],
@@ -172,7 +199,8 @@
       "files": [
         "*.{spec,test,e2e,stories}.{ts,tsx}",
         "tests/**/*.ts",
-        "packages/backend/server/tests/**/*.ts"
+        "packages/backend/server/tests/**/*.ts",
+        "tools/**.*"
       ],
       "rules": {
         "typescript/no-non-null-assertion": "off",

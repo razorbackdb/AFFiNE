@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+
 import eslint from '@eslint/js';
 import rxjs from '@smarttools/eslint-plugin-rxjs';
 import tsParser from '@typescript-eslint/parser';
@@ -10,33 +12,13 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import unicorn from 'eslint-plugin-unicorn';
 import tseslint from 'typescript-eslint';
 
+const ignoreList = readFileSync('.prettierignore', 'utf-8')
+  .split('\n')
+  .filter(line => line.trim() && !line.startsWith('#'));
+
 export default tseslint.config(
   {
-    ignores: [
-      '**/node_modules',
-      '**/dist',
-      '**/.next',
-      '**/out',
-      '**/storybook-static',
-      '**/affine-out',
-      '**/_next',
-      '**/lib',
-      '**/.eslintrc.js',
-      '**/e2e-dist-*',
-      '**/static',
-      '**/web-static',
-      '**/public',
-      '**/.coverage',
-      '.nx/**',
-      '.yarn/**',
-      '**/*.d.ts',
-      '.github/**/*',
-      'packages/frontend/component/.storybook/**/*',
-      'packages/frontend/i18n/src/i18n-generated.ts',
-      'packages/frontend/i18n/src/i18n-completenesses.json',
-      'packages/frontend/templates/*.gen.ts',
-      'packages/frontend/apps/android/App/app/build/**',
-    ],
+    ignores: ignoreList,
   },
   {
     settings: {
@@ -218,7 +200,7 @@ export default tseslint.config(
   {
     files: [
       'packages/**/*.{ts,tsx}',
-      'tools/cli/**/*.{ts,tsx}',
+      'tools/**/*.{ts,tsx}',
       'blocksuite/**/*.{ts,tsx}',
     ],
     rules: {

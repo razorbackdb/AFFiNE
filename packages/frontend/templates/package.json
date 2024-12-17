@@ -4,7 +4,8 @@
   "sideEffect": false,
   "version": "0.18.0",
   "scripts": {
-    "postinstall": "node ./build-edgeless.mjs && node ./build-stickers.mjs"
+    "build": "node ./build-edgeless.mjs && node ./build-stickers.mjs",
+    "postinstall": "yarn build"
   },
   "type": "module",
   "exports": {

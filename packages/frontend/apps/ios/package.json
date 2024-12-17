@@ -5,11 +5,10 @@
   "private": true,
   "browser": "src/index.tsx",
   "scripts": {
-    "build": "cross-env DISTRIBUTION=ios yarn workspace @affine/cli bundle",
-    "dev": "yarn workspace @affine/cli dev",
+    "build": "affine bundle",
+    "dev": "affine bundle --dev",
     "sync": "yarn cap sync",
-    "sync:dev": "CAP_SERVER_URL=http://localhost:8080 yarn cap sync",
-    "static-server": "cross-env DISTRIBUTION=ios yarn workspace @affine/cli dev --static"
+    "sync:dev": "CAP_SERVER_URL=http://localhost:8080 yarn cap sync"
   },
   "dependencies": {
     "@affine/component": "workspace:*",

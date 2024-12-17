@@ -53,16 +53,22 @@ const cloudUserSchema = z.object({
 export const runPrisma = async <T>(
   cb: (
     prisma: InstanceType<
-      // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+      // oxlint-disable-next-line @typescript-eslint/consistent-type-imports
       typeof import('../../../packages/backend/server/node_modules/@prisma/client').PrismaClient
     >
   ) => Promise<T>
 ): Promise<T> => {
   const {
     PrismaClient,
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-  } = require('../../../packages/backend/server/node_modules/@prisma/client');
-  const client = new PrismaClient();
+    // oxlint-disable-next-line @typescript-eslint/consistent-type-imports
+  } = await import(
+    '../../../packages/backend/server/node_modules/@prisma/client'
+  );
+  const client = new PrismaClient({
+    datasourceUrl:
+      process.env.DATABASE_URL ||
+      'postgresql://affine:affine@localhost:5432/affine',
+  });
   await client.$connect();
   try {
     return await cb(client);

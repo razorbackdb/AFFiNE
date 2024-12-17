@@ -18,7 +18,7 @@ docker compose -f ./.docker/dev/compose.yml up -d
 
 ```sh
 # build native
-yarn workspace @affine/server-native build
+yarn affine @affine/server-native build
 ```
 
 ## Prepare dev environment

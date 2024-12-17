@@ -5,9 +5,8 @@
   "private": true,
   "browser": "src/index.tsx",
   "scripts": {
-    "build": "cross-env DISTRIBUTION=android yarn workspace @affine/cli bundle",
-    "dev": "yarn workspace @affine/cli dev",
-    "static-server": "cross-env DISTRIBUTION=android yarn workspace @affine/cli dev --static"
+    "build": "affine bundle",
+    "dev": "affine bundle --dev"
   },
   "dependencies": {
     "@affine/component": "workspace:*",

@@ -34,6 +34,7 @@ function spawnOrReloadElectron() {
   const ext = process.platform === 'win32' ? '.cmd' : '';
   const exe = resolve(rootDir, 'node_modules', '.bin', `electron${ext}`);
 
+  delete process.env['NODE_OPTIONS'];
   spawnProcess = spawn(exe, ['.'], {
     cwd: electronDir,
     env: process.env,

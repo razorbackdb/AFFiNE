@@ -14,19 +14,17 @@
         "ios",
         "android",
         "docs",
-        "storybook",
         "component",
-        "workspace",
         "env",
         "graphql",
-        "cli",
         "hooks",
         "i18n",
         "native",
         "templates",
         "debug",
         "nbstore",
-        "infra"
+        "infra",
+        "tools"
       ]
     ]
   }

@@ -89,7 +89,7 @@ jobs:
           electron-install: false
           full-cache: true
       - name: Run i18n codegen
-        run: yarn workspace @affine/i18n build
+        run: yarn affine @affine/i18n build
       - name: Run ESLint
         run: yarn lint:eslint --max-warnings=0
       - name: Run Prettier
@@ -162,7 +162,7 @@ jobs:
           full-cache: true
 
       - name: Run playwright tests
-        run: yarn workspace @affine-test/affine-local e2e --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: yarn affine @affine-test/affine-local e2e --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Upload test results
         if: ${{ failure() }}
@@ -192,7 +192,7 @@ jobs:
           full-cache: true
 
       - name: Run playwright tests
-        run: yarn workspace @affine-test/affine-mobile e2e --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: yarn affine @affine-test/affine-mobile e2e --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Upload test results
         if: ${{ failure() }}
@@ -315,8 +315,7 @@ jobs:
           electron-install: false
           full-cache: true
       - name: Build Electron renderer
-        # always skip cache because its fast, and cache configuration is always changing
-        run: yarn build
+        run: yarn affine @affine/electron bundle
         env:
           DISTRIBUTION: desktop
       - name: zip web
@@ -377,7 +376,7 @@ jobs:
         uses: ./.github/actions/server-test-env
 
       - name: Run server tests
-        run: yarn workspace @affine/server test:coverage
+        run: yarn affine @affine/server test:coverage
         env:
           CARGO_TARGET_DIR: '${{ github.workspace }}/target'
           COPILOT_OPENAI_API_KEY: 'use_fake_openai_api_key'
@@ -480,7 +479,7 @@ jobs:
 
       - name: Run server tests
         if: ${{ steps.check-blocksuite-update.outputs.skip != 'true' || steps.apifilter.outputs.changed == 'true' }}
-        run: yarn workspace @affine/server test:copilot:coverage --forbid-only
+        run: yarn affine @affine/server test:copilot:coverage --forbid-only
         env:
           CARGO_TARGET_DIR: '${{ github.workspace }}/target'
           COPILOT_OPENAI_API_KEY: ${{ secrets.COPILOT_OPENAI_API_KEY }}
@@ -570,7 +569,7 @@ jobs:
         if: ${{ steps.check-blocksuite-update.outputs.skip != 'true' || steps.e2efilter.outputs.changed == 'true' }}
         uses: ./.github/actions/copilot-test
         with:
-          script: yarn workspace @affine-test/affine-cloud-copilot e2e --forbid-only --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+          script: yarn affine @affine-test/affine-cloud-copilot e2e --forbid-only --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
           openai-key: ${{ secrets.COPILOT_OPENAI_API_KEY }}
           fal-key: ${{ secrets.COPILOT_FAL_API_KEY }}
 
@@ -587,19 +586,19 @@ jobs:
       matrix:
         tests:
           - name: 'Server E2E Test 1/3'
-            script: yarn workspace @affine-test/affine-cloud e2e --forbid-only --shard=1/3
+            script: yarn affine @affine-test/affine-cloud e2e --forbid-only --shard=1/3
           - name: 'Server E2E Test 2/3'
-            script: yarn workspace @affine-test/affine-cloud e2e --forbid-only --shard=2/3
+            script: yarn affine @affine-test/affine-cloud e2e --forbid-only --shard=2/3
           - name: 'Server E2E Test 3/3'
-            script: yarn workspace @affine-test/affine-cloud e2e --forbid-only --shard=3/3
+            script: yarn affine @affine-test/affine-cloud e2e --forbid-only --shard=3/3
           - name: 'Server Desktop E2E Test'
             script: |
-              yarn workspace @affine/electron build:dev
+              yarn affine @affine/electron build:dev
               # Workaround for Electron apps failing to initialize on Ubuntu 24.04 due to AppArmor restrictions
               # Disables unprivileged user namespaces restriction to allow Electron apps to run
               # Reference: https://github.com/electron/electron/issues/42510
               sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-              xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn workspace @affine-test/affine-desktop-cloud e2e
+              xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn affine @affine-test/affine-desktop-cloud e2e
     needs:
       - build-server-native
       - build-native
@@ -729,7 +728,7 @@ jobs:
       - name: Run unit tests
         if: ${{ matrix.spec.test }}
         shell: bash
-        run: yarn workspace @affine/electron vitest
+        run: yarn affine @affine/electron vitest
 
       - name: Download web artifact
         uses: ./.github/actions/download-web
@@ -737,7 +736,7 @@ jobs:
           path: packages/frontend/apps/electron/resources/web-static
 
       - name: Build Desktop Layers
-        run: yarn workspace @affine/electron build
+        run: yarn affine @affine/electron build
 
       - name: Run desktop tests
         if: ${{ matrix.spec.os == 'ubuntu-latest' }}
@@ -746,11 +745,11 @@ jobs:
           # Disables unprivileged user namespaces restriction to allow Electron apps to run
           # Reference: https://github.com/electron/electron/issues/42510
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn workspace @affine-test/affine-desktop e2e
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn affine @affine-test/affine-desktop e2e
 
       - name: Run desktop tests
         if: ${{ matrix.spec.test && matrix.spec.os != 'ubuntu-latest' }}
-        run: yarn workspace @affine-test/affine-desktop e2e
+        run: yarn affine @affine-test/affine-desktop e2e
 
       - name: Make bundle (macOS)
         if: ${{ matrix.spec.target == 'aarch64-apple-darwin' }}
@@ -758,7 +757,7 @@ jobs:
           SKIP_BUNDLE: true
           SKIP_WEB_BUILD: true
           HOIST_NODE_MODULES: 1
-        run: yarn workspace @affine/electron package --platform=darwin --arch=arm64
+        run: yarn affine @affine/electron package --platform=darwin --arch=arm64
 
       - name: Make Bundle (Linux)
         run: |
@@ -768,7 +767,7 @@ jobs:
           flatpak update
           # some flatpak deps need git protocol.file.allow
           git config --global protocol.file.allow always
-          yarn workspace @affine/electron make --platform=linux --arch=x64
+          yarn affine @affine/electron make --platform=linux --arch=x64
         if: ${{ matrix.spec.target == 'x86_64-unknown-linux-gnu' }}
         env:
           SKIP_WEB_BUILD: 1
@@ -777,7 +776,7 @@ jobs:
       - name: Output check
         if: ${{ matrix.spec.os == 'macos-14' && matrix.spec.arch == 'arm64' }}
         run: |
-          yarn workspace @affine/electron exec node --loader ts-node/esm/transpile-only ./scripts/macos-arm64-output-check.ts
+          yarn affine @affine/electron node ./scripts/macos-arm64-output-check.ts
 
       - name: Upload test results
         if: ${{ failure() }}
