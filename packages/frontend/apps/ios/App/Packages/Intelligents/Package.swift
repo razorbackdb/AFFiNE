@@ -12,12 +12,16 @@ let package = Package(
   ],
   products: [
     .library(name: "Intelligents", targets: ["Intelligents"]),
-  ],
-  dependencies: [
+  ]
+  ,dependencies: [
     .package(url: "https://github.com/gonzalezreal/swift-markdown-ui", from: "2.4.1"),
+    .package(url: "https://github.com/Lakr233/SpringInterpolation", from: "1.1.0"),
+    .package(url: "https://github.com/Lakr233/MSDisplayLink", from: "1.1.0"),
   ],
   targets: [
     .target(name: "Intelligents", dependencies: [
+      "SpringInterpolation",
+      "MSDisplayLink",
       .product(name: "MarkdownUI", package: "swift-markdown-ui"),
     ]),
   ]

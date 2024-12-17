@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5075136A2D1924C600AD60C0 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507513692D1924C600AD60C0 /* RootViewController.swift */; };
+		5075136E2D1925BC00AD60C0 /* IntelligentsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5075136D2D1925BC00AD60C0 /* IntelligentsPlugin.swift */; };
 		50802D612D112F8700694021 /* Intelligents in Frameworks */ = {isa = PBXBuildFile; productRef = 50802D602D112F8700694021 /* Intelligents */; };
 		50A285D72D112A5E000D5A6D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 50A285D62D112A5E000D5A6D /* Localizable.xcstrings */; };
 		50A285D82D112A5E000D5A6D /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 50A285D52D112A5E000D5A6D /* InfoPlist.xcstrings */; };
@@ -31,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		507513692D1924C600AD60C0 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		5075136D2D1925BC00AD60C0 /* IntelligentsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntelligentsPlugin.swift; sourceTree = "<group>"; };
 		50802D5E2D112F7D00694021 /* Intelligents */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Intelligents; sourceTree = "<group>"; };
 		50A285D52D112A5E000D5A6D /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		50A285D62D112A5E000D5A6D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 				9D90BE172CCB9876006677DB /* CookieManager.swift */,
 				9D90BE182CCB9876006677DB /* CookiePlugin.swift */,
 				9D6A85322CCF6DA700DAB35F /* HashcashPlugin.swift */,
+				5075136D2D1925BC00AD60C0 /* IntelligentsPlugin.swift */,
 			);
 			path = Cookie;
 			sourceTree = "<group>";
@@ -143,8 +148,9 @@
 			isa = PBXGroup;
 			children = (
 				9D90BE1A2CCB9876006677DB /* Plugins */,
-				9D90BE1B2CCB9876006677DB /* AffineViewController.swift */,
 				9D90BE1C2CCB9876006677DB /* AppDelegate.swift */,
+				507513692D1924C600AD60C0 /* RootViewController.swift */,
+				9D90BE1B2CCB9876006677DB /* AffineViewController.swift */,
 				9D90BE1D2CCB9876006677DB /* Assets.xcassets */,
 				9D90BE1E2CCB9876006677DB /* capacitor.config.json */,
 				9D90BE1F2CCB9876006677DB /* config.xml */,
@@ -309,6 +315,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5075136E2D1925BC00AD60C0 /* IntelligentsPlugin.swift in Sources */,
+				5075136A2D1924C600AD60C0 /* RootViewController.swift in Sources */,
 				C4C97C7C2D030BE000BC2AD1 /* affine_mobile_native.swift in Sources */,
 				C4C97C7D2D030BE000BC2AD1 /* affine_mobile_nativeFFI.h in Sources */,
 				C4C97C7E2D030BE000BC2AD1 /* affine_mobile_nativeFFI.modulemap in Sources */,

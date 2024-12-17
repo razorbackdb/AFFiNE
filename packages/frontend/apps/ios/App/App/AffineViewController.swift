@@ -5,7 +5,8 @@ import UIKit
 class AFFiNEViewController: CAPBridgeViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
-    webView?.allowsBackForwardNavigationGestures = true
+    // disable by default, enable manually when there is a "back" button in page-header
+    webView?.allowsBackForwardNavigationGestures = false
     navigationController?.navigationBar.isHidden = true
     extendedLayoutIncludesOpaqueBars = false
     edgesForExtendedLayout = []
@@ -18,7 +19,8 @@ class AFFiNEViewController: CAPBridgeViewController {
     let plugins: [CAPPlugin] = [
       CookiePlugin(),
       HashcashPlugin(),
-//      IntelligentsPlugin(representController: self),
+      NavigationGesturePlugin(),
+      IntelligentsPlugin(representController: self),
     ]
     plugins.forEach { bridge?.registerPluginInstance($0) }
   }
