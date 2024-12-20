@@ -8,6 +8,7 @@ import {
 import { Button } from '@affine/component/ui/button';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
 import { AuthService, CaptchaService } from '@affine/core/modules/cloud';
+import type { AuthSessionStatus } from '@affine/core/modules/cloud/entities/session';
 import { Unreachable } from '@affine/env/constant';
 import { Trans, useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -27,11 +28,11 @@ import * as style from './style.css';
 export const SignInWithEmailStep = ({
   state,
   changeState,
-  close,
+  onAuthenticated,
 }: {
   state: SignInState;
   changeState: Dispatch<SetStateAction<SignInState>>;
-  close: () => void;
+  onAuthenticated?: (status: AuthSessionStatus) => void;
 }) => {
   const initialSent = useRef(false);
   const [resendCountDown, setResendCountDown] = useState(0);
@@ -66,13 +67,13 @@ export const SignInWithEmailStep = ({
 
   useEffect(() => {
     if (loginStatus === 'authenticated') {
-      close();
       notify.success({
         title: t['com.affine.auth.toast.title.signed-in'](),
         message: t['com.affine.auth.toast.message.signed-in'](),
       });
     }
-  }, [close, loginStatus, t]);
+    onAuthenticated?.(loginStatus);
+  }, [loginStatus, onAuthenticated, t]);
 
   const sendEmail = useAsyncCallback(async () => {
     if (isSending || (!verifyToken && needCaptcha)) return;

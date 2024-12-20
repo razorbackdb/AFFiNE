@@ -3,6 +3,7 @@ import { AffineOtherPageLayout } from '@affine/component/affine-other-page-layou
 import { workbenchRoutes } from '@affine/core/desktop/workbench-router';
 import {
   DefaultServerService,
+  ServersService,
   WorkspaceServerService,
 } from '@affine/core/modules/cloud';
 import { DndService } from '@affine/core/modules/dnd/services';
@@ -21,12 +22,18 @@ import {
 } from '@toeverything/infra';
 import type { PropsWithChildren, ReactElement } from 'react';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { matchPath, useLocation, useParams } from 'react-router-dom';
+import {
+  matchPath,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 
 import { AffineErrorBoundary } from '../../../components/affine/affine-error-boundary';
 import { WorkbenchRoot } from '../../../modules/workbench';
 import { AppContainer } from '../../components/app-container';
 import { PageNotFound } from '../404';
+import { SignIn } from '../auth/sign-in';
 import { WorkspaceLayout } from './layouts/workspace-layout';
 import { SharePage } from './share/share-page';
 
@@ -52,6 +59,7 @@ export const Component = (): ReactElement => {
 
   const params = useParams();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   // check if we are in detail doc route, if so, maybe render share page
   const detailDocRoute = useMemo(() => {
@@ -80,6 +88,11 @@ export const Component = (): ReactElement => {
   const [workspaceNotFound, setWorkspaceNotFound] = useState(false);
   const listLoading = useLiveData(workspacesService.list.isRevalidating$);
   const workspaces = useLiveData(workspacesService.list.workspaces$);
+  const serversService = useService(ServersService);
+  const serverFromSearchParams = searchParams.get('server');
+  const serverNotFound = serverFromSearchParams
+    ? serversService.getServerByBaseUrl(serverFromSearchParams)
+    : null;
   const meta = useMemo(() => {
     return workspaces.find(({ id }) => id === params.workspaceId);
   }, [workspaces, params.workspaceId]);
@@ -113,6 +126,16 @@ export const Component = (): ReactElement => {
   }, [listLoading, meta, workspaceNotFound, workspacesService]);
 
   if (workspaceNotFound) {
+    if (BUILD_CONFIG.isElectron && serverNotFound) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('server');
+      const redirectUrl = url.toString().replace(window.location.origin, '');
+      return (
+        <AffineOtherPageLayout>
+          <SignIn redirectUrl={redirectUrl} />
+        </AffineOtherPageLayout>
+      );
+    }
     if (detailDocRoute) {
       return (
         <SharePage

@@ -35,6 +35,11 @@ export interface AuthSessionAuthenticated {
   session: AuthSessionInfo;
 }
 
+export type AuthSessionStatus = (
+  | AuthSessionUnauthenticated
+  | AuthSessionAuthenticated
+)['status'];
+
 export class AuthSession extends Entity {
   session$: LiveData<AuthSessionUnauthenticated | AuthSessionAuthenticated> =
     LiveData.from(this.store.watchCachedAuthSession(), null).map(session =>

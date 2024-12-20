@@ -146,7 +146,6 @@ jobs:
         env:
           SKIP_WEB_BUILD: 1
           HOIST_NODE_MODULES: 1
-          DEBUG: '*'
 
       - name: signing DMG
         if: ${{ matrix.spec.platform == 'darwin' }}

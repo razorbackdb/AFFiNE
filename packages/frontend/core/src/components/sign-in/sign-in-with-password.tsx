@@ -11,6 +11,7 @@ import {
   CaptchaService,
   ServerService,
 } from '@affine/core/modules/cloud';
+import type { AuthSessionStatus } from '@affine/core/modules/cloud/entities/session';
 import { Unreachable } from '@affine/env/constant';
 import { ServerDeploymentType } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
@@ -25,11 +26,11 @@ import * as styles from './style.css';
 export const SignInWithPasswordStep = ({
   state,
   changeState,
-  close,
+  onAuthenticated,
 }: {
   state: SignInState;
   changeState: Dispatch<SetStateAction<SignInState>>;
-  close: () => void;
+  onAuthenticated?: (status: AuthSessionStatus) => void;
 }) => {
   const t = useI18n();
   const authService = useService(AuthService);
@@ -62,13 +63,13 @@ export const SignInWithPasswordStep = ({
 
   useEffect(() => {
     if (loginStatus === 'authenticated') {
-      close();
       notify.success({
         title: t['com.affine.auth.toast.title.signed-in'](),
         message: t['com.affine.auth.toast.message.signed-in'](),
       });
     }
-  }, [close, loginStatus, t]);
+    onAuthenticated?.(loginStatus);
+  }, [loginStatus, onAuthenticated, t]);
 
   const onSignIn = useAsyncCallback(async () => {
     if (isLoading || (!verifyToken && needCaptcha)) return;

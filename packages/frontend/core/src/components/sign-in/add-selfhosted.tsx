@@ -78,9 +78,11 @@ export const AddSelfhostedStep = ({
         ...prev,
         initialServerBaseUrl: undefined,
       }));
-      onConnect();
+      if (serversService.getServerByBaseUrl(state.initialServerBaseUrl)) {
+        onConnect();
+      }
     }
-  }, [changeState, onConnect, state]);
+  }, [changeState, onConnect, serversService, state]);
 
   return (
     <>

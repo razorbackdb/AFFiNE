@@ -3,6 +3,7 @@ import { AuthInput, ModalHeader } from '@affine/component/auth-components';
 import { OAuth } from '@affine/core/components/affine/auth/oauth';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
 import { AuthService, ServerService } from '@affine/core/modules/cloud';
+import type { AuthSessionStatus } from '@affine/core/modules/cloud/entities/session';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { ServerDeploymentType } from '@affine/graphql';
 import { Trans, useI18n } from '@affine/i18n';
@@ -30,11 +31,13 @@ function validateEmail(email: string) {
 export const SignInStep = ({
   state,
   changeState,
-  close,
+  onSkip,
+  onAuthenticated,
 }: {
   state: SignInState;
   changeState: Dispatch<SetStateAction<SignInState>>;
-  close: () => void;
+  onSkip: () => void;
+  onAuthenticated?: (status: AuthSessionStatus) => void;
 }) => {
   const t = useI18n();
   const serverService = useService(ServerService);
@@ -61,13 +64,13 @@ export const SignInStep = ({
 
   useEffect(() => {
     if (loginStatus === 'authenticated') {
-      close();
       notify.success({
         title: t['com.affine.auth.toast.title.signed-in'](),
         message: t['com.affine.auth.toast.message.signed-in'](),
       });
     }
-  }, [close, loginStatus, t]);
+    onAuthenticated?.(loginStatus);
+  }, [loginStatus, onAuthenticated, t]);
 
   const onContinue = useAsyncCallback(async () => {
     if (!validateEmail(email)) {
@@ -205,7 +208,7 @@ export const SignInStep = ({
           </div>
           <Button
             variant="plain"
-            onClick={() => close()}
+            onClick={onSkip}
             className={style.skipLink}
             suffix={<ArrowRightBigIcon className={style.skipLinkIcon} />}
           >

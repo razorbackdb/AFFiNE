@@ -360,7 +360,18 @@ export const createConfiguration: (
       client: {
         overlay: process.env.DISABLE_DEV_OVERLAY === 'true' ? false : undefined,
       },
-      historyApiFallback: true,
+      historyApiFallback: {
+        rewrites: [
+          {
+            from: /.*/,
+            to: () => {
+              return process.env.SELF_HOSTED === 'true'
+                ? '/selfhost.html'
+                : '/index.html';
+            },
+          },
+        ],
+      },
       static: [
         {
           directory: join(

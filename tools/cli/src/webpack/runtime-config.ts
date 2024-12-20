@@ -22,7 +22,6 @@ export function getBuildConfig(buildFlags: BuildFlags): BUILD_CONFIG_TYPE {
         isAndroid: buildFlags.distribution === 'android',
         isAdmin: buildFlags.distribution === 'admin',
 
-        isSelfHosted: process.env.SELF_HOSTED === 'true',
         appBuildType: 'stable' as const,
         serverUrlPrefix: 'https://app.affine.pro',
         appVersion: packageJson.version,
