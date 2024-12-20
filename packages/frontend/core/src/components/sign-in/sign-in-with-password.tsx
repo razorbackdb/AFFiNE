@@ -9,14 +9,20 @@ import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hoo
 import {
   AuthService,
   CaptchaService,
+  isBackendError,
   ServerService,
 } from '@affine/core/modules/cloud';
 import { Unreachable } from '@affine/env/constant';
-import { ServerDeploymentType } from '@affine/graphql';
+import {
+  ErrorNames,
+  ServerDeploymentType,
+  UserFriendlyError,
+} from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import type { SignInState } from '.';
 import { Captcha } from './captcha';
@@ -59,6 +65,7 @@ export const SignInWithPasswordStep = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const loginStatus = useLiveData(authService.session.status$);
+  const nav = useNavigate();
 
   useEffect(() => {
     if (loginStatus === 'authenticated') {
@@ -84,6 +91,18 @@ export const SignInWithPasswordStep = ({
       });
     } catch (err) {
       console.error(err);
+      if (
+        err instanceof Error &&
+        isBackendError(err) &&
+        UserFriendlyError.fromAnyError(err).name ===
+          ErrorNames.UNSUPPORTED_CLIENT_VERSION
+      ) {
+        const { action } = UserFriendlyError.fromAnyError(err).args;
+        nav(
+          `/sign-in?error=${encodeURIComponent(err.message)}&action=${encodeURIComponent(action as string)}`
+        );
+        return;
+      }
       setPasswordError(true);
     } finally {
       setIsLoading(false);
@@ -97,6 +116,7 @@ export const SignInWithPasswordStep = ({
     email,
     password,
     challenge,
+    nav,
   ]);
 
   const sendMagicLink = useCallback(() => {

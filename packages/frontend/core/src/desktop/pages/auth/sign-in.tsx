@@ -1,4 +1,4 @@
-import { notify } from '@affine/component';
+import { notify, useConfirmModal } from '@affine/component';
 import { AffineOtherPageLayout } from '@affine/component/affine-other-page-layout';
 import { SignInPageContainer } from '@affine/component/auth-components';
 import { SignInPanel } from '@affine/core/components/sign-in';
@@ -24,8 +24,10 @@ export const SignIn = ({
   const navigate = useNavigate();
   const { jumpToIndex } = useNavigateHelper();
   const [searchParams] = useSearchParams();
+  const { openConfirmModal } = useConfirmModal();
   const redirectUrl = redirectUrlFromProps ?? searchParams.get('redirect_uri');
   const error = searchParams.get('error');
+  const action = searchParams.get('action');
 
   useEffect(() => {
     if (error) {
@@ -35,6 +37,28 @@ export const SignIn = ({
       });
     }
   }, [error, t]);
+
+  useEffect(() => {
+    if (action === 'upgrade' || action === 'downgrade') {
+      openConfirmModal({
+        title: t['com.affine.minimum-client.title'](),
+        description:
+          t[
+            `com.affine.minimum-client.${action === 'upgrade' ? 'outdated' : 'advanced'}.message`
+          ](),
+        confirmText:
+          t[
+            `com.affine.minimum-client.${action === 'upgrade' ? 'outdated' : 'advanced'}.button`
+          ](),
+        onConfirm: () =>
+          window.open(
+            BUILD_CONFIG.downloadUrl,
+            '_blank',
+            'noreferrer noopener'
+          ),
+      });
+    }
+  }, [action, jumpToIndex, openConfirmModal, searchParams, t]);
 
   const handleClose = () => {
     if (session.status$.value === 'authenticated' && redirectUrl) {
