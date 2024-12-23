@@ -1,3 +1,7 @@
+import {
+  FileDropManager,
+  type FileDropOptions,
+} from '@blocksuite/affine-components/drag-indicator';
 import { ImageBlockSchema } from '@blocksuite/affine-model';
 import {
   DragHandleConfigExtension,
@@ -13,10 +17,6 @@ import {
 import { BlockService } from '@blocksuite/block-std';
 import { GfxControllerIdentifier } from '@blocksuite/block-std/gfx';
 
-import {
-  FileDropManager,
-  type FileDropOptions,
-} from '../_common/components/file-drop-manager.js';
 import { setImageProxyMiddlewareURL } from '../_common/transformers/middlewares.js';
 import { addImages } from '../root-block/edgeless/utils/common.js';
 import type { ImageBlockComponent } from './image-block.js';
@@ -30,7 +30,7 @@ export class ImageBlockService extends BlockService {
 
   private readonly _fileDropOptions: FileDropOptions = {
     flavour: this.flavour,
-    onDrop: async ({ files, targetModel, place, point }) => {
+    onDrop: ({ files, targetModel, place, point }) => {
       const imageFiles = files.filter(file => file.type.startsWith('image/'));
       if (!imageFiles.length) return false;
 
@@ -42,10 +42,13 @@ export class ImageBlockService extends BlockService {
           targetModel,
           place
         );
-      } else if (isInsideEdgelessEditor(this.host)) {
+        return true;
+      }
+
+      if (isInsideEdgelessEditor(this.host)) {
         const gfx = this.std.get(GfxControllerIdentifier);
         point = gfx.viewport.toViewCoordFromClientCoord(point);
-        await addImages(this.std, files, point);
+        addImages(this.std, files, point).catch(console.error);
 
         this.std.getOptional(TelemetryProvider)?.track('CanvasElementAdded', {
           control: 'canvas:drop',
@@ -54,9 +57,10 @@ export class ImageBlockService extends BlockService {
           segment: 'toolbar',
           type: 'image',
         });
+        return true;
       }
 
-      return true;
+      return false;
     },
   };
 
@@ -67,7 +71,7 @@ export class ImageBlockService extends BlockService {
   override mounted(): void {
     super.mounted();
 
-    this.fileDropManager = new FileDropManager(this, this._fileDropOptions);
+    this.fileDropManager = new FileDropManager(this.std, this._fileDropOptions);
   }
 }
 

@@ -1,3 +1,7 @@
+import {
+  FileDropManager,
+  type FileDropOptions,
+} from '@blocksuite/affine-components/drag-indicator';
 import { AttachmentBlockSchema } from '@blocksuite/affine-model';
 import {
   DragHandleConfigExtension,
@@ -13,10 +17,6 @@ import {
 import { BlockService } from '@blocksuite/block-std';
 import { GfxControllerIdentifier } from '@blocksuite/block-std/gfx';
 
-import {
-  FileDropManager,
-  type FileDropOptions,
-} from '../_common/components/file-drop-manager.js';
 import { EMBED_CARD_HEIGHT, EMBED_CARD_WIDTH } from '../_common/consts.js';
 import { addAttachments } from '../root-block/edgeless/utils/common.js';
 import type { AttachmentBlockComponent } from './attachment-block.js';
@@ -28,7 +28,7 @@ export class AttachmentBlockService extends BlockService {
 
   private readonly _fileDropOptions: FileDropOptions = {
     flavour: this.flavour,
-    onDrop: async ({ files, targetModel, place, point }) => {
+    onDrop: ({ files, targetModel, place, point }) => {
       if (!files.length) return false;
 
       // generic attachment block for all files except images
@@ -37,17 +37,21 @@ export class AttachmentBlockService extends BlockService {
       );
 
       if (targetModel && !matchFlavours(targetModel, ['affine:surface'])) {
-        await addSiblingAttachmentBlocks(
+        addSiblingAttachmentBlocks(
           this.host,
           attachmentFiles,
           this.maxFileSize,
           targetModel,
           place
-        );
-      } else if (isInsideEdgelessEditor(this.host)) {
+        ).catch(console.error);
+
+        return true;
+      }
+
+      if (isInsideEdgelessEditor(this.host)) {
         const gfx = this.std.get(GfxControllerIdentifier);
         point = gfx.viewport.toViewCoordFromClientCoord(point);
-        await addAttachments(this.std, attachmentFiles, point);
+        addAttachments(this.std, attachmentFiles, point).catch(console.error);
 
         this.std.getOptional(TelemetryProvider)?.track('CanvasElementAdded', {
           control: 'canvas:drop',
@@ -56,9 +60,11 @@ export class AttachmentBlockService extends BlockService {
           segment: 'toolbar',
           type: 'attachment',
         });
+
+        return true;
       }
 
-      return true;
+      return false;
     },
   };
 
@@ -69,7 +75,7 @@ export class AttachmentBlockService extends BlockService {
   override mounted(): void {
     super.mounted();
 
-    this.fileDropManager = new FileDropManager(this, this._fileDropOptions);
+    this.fileDropManager = new FileDropManager(this.std, this._fileDropOptions);
   }
 }
 

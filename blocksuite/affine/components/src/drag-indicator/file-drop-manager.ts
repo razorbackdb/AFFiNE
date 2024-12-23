@@ -1,4 +1,3 @@
-import type { DragIndicator } from '@blocksuite/affine-components/drag-indicator';
 import {
   calcDropTarget,
   type DropResult,
@@ -6,10 +5,12 @@ import {
   isInsidePageEditor,
   matchFlavours,
 } from '@blocksuite/affine-shared/utils';
-import type { BlockService, EditorHost } from '@blocksuite/block-std';
+import type { BlockStdScope, EditorHost } from '@blocksuite/block-std';
 import type { IVec } from '@blocksuite/global/utils';
-import { assertExists, Point } from '@blocksuite/global/utils';
+import { Point } from '@blocksuite/global/utils';
 import type { BlockModel } from '@blocksuite/store';
+
+import type { DragIndicator } from './index.js';
 
 export type onDropProps = {
   files: File[];
@@ -20,18 +21,13 @@ export type onDropProps = {
 
 export type FileDropOptions = {
   flavour: string;
-  onDrop?: ({
-    files,
-    targetModel,
-    place,
-    point,
-  }: onDropProps) => Promise<boolean> | void;
+  onDrop?: ({ files, targetModel, place, point }: onDropProps) => boolean;
 };
 
 export class FileDropManager {
   private static _dropResult: DropResult | null = null;
 
-  private readonly _blockService: BlockService;
+  private readonly _std: BlockStdScope;
 
   private readonly _fileDropOptions: FileDropOptions;
 
@@ -57,12 +53,12 @@ export class FileDropManager {
     const { targetModel, type: place } = this;
     const { x, y } = event;
 
-    onDrop({
+    return onDrop({
       files: [...droppedFiles],
       targetModel,
       place,
       point: [x, y],
-    })?.catch(console.error);
+    });
   };
 
   onDragLeave = () => {
@@ -87,7 +83,7 @@ export class FileDropManager {
     if (element) {
       const model = element.model;
       const parent = this.doc.getParent(model);
-      if (!matchFlavours(parent, ['affine:surface'])) {
+      if (!matchFlavours(parent, ['affine:surface' as BlockSuite.Flavour])) {
         result = calcDropTarget(point, model, element);
       }
     }
@@ -101,11 +97,11 @@ export class FileDropManager {
   };
 
   get doc() {
-    return this._blockService.doc;
+    return this._std.doc;
   }
 
   get editorHost(): EditorHost {
-    return this._blockService.std.host;
+    return this._std.host;
   }
 
   get targetModel(): BlockModel | null {
@@ -113,13 +109,13 @@ export class FileDropManager {
 
     if (!targetModel && isInsidePageEditor(this.editorHost)) {
       const rootModel = this.doc.root;
-      assertExists(rootModel);
+      if (!rootModel) return null;
 
       let lastNote = rootModel.children[rootModel.children.length - 1];
       if (!lastNote || !matchFlavours(lastNote, ['affine:note'])) {
         const newNoteId = this.doc.addBlock('affine:note', {}, rootModel.id);
         const newNote = this.doc.getBlockById(newNoteId);
-        assertExists(newNote);
+        if (!newNote) return null;
         lastNote = newNote;
       }
 
@@ -134,7 +130,7 @@ export class FileDropManager {
           0
         );
         const newParagraph = this.doc.getBlockById(newParagraphId);
-        assertExists(newParagraph);
+        if (!newParagraph) return null;
         targetModel = newParagraph;
       }
     }
@@ -148,26 +144,28 @@ export class FileDropManager {
       : 'before';
   }
 
-  constructor(blockService: BlockService, fileDropOptions: FileDropOptions) {
-    this._blockService = blockService;
+  constructor(std: BlockStdScope, fileDropOptions: FileDropOptions) {
+    this._std = std;
     this._fileDropOptions = fileDropOptions;
 
-    this._indicator = document.querySelector(
+    let indicator = document.querySelector<DragIndicator>(
       'affine-drag-indicator'
-    ) as DragIndicator;
-    if (!this._indicator) {
-      this._indicator = document.createElement(
+    );
+
+    if (!indicator) {
+      indicator = document.createElement(
         'affine-drag-indicator'
       ) as DragIndicator;
-      document.body.append(this._indicator);
+      document.body.append(indicator);
     }
 
+    this._indicator = indicator;
+
     if (fileDropOptions.onDrop) {
-      this._blockService.disposables.addFromEvent(
-        this._blockService.std.host,
-        'drop',
-        this._onDrop
-      );
+      this._std.event.add('nativeDrop', context => {
+        const event = context.get('dndState');
+        this._onDrop(event.raw);
+      });
     }
   }
 }
