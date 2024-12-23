@@ -379,9 +379,6 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<
   }
 
   listenFullWidthChange() {
-    if (!this.doc.awarenessStore.getFlag('enable_database_full_width')) {
-      return;
-    }
     if (this.std.get(DocModeProvider).getEditorMode() === 'edgeless') {
       return;
     }
