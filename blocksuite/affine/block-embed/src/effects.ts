@@ -1,35 +1,35 @@
-import { EmbedEdgelessBlockComponent } from './embed-figma-block/embed-edgeless-figma-block.js';
-import type { EmbedFigmaBlockService } from './embed-figma-block/embed-figma-service.js';
-import { EmbedFigmaBlockComponent } from './embed-figma-block/index.js';
-import { EmbedEdgelessGithubBlockComponent } from './embed-github-block/embed-edgeless-github-block.js';
+import { EmbedFigmaBlockComponent } from './embed-figma-block';
+import { EmbedEdgelessBlockComponent } from './embed-figma-block/embed-edgeless-figma-block';
+import type { EmbedFigmaBlockService } from './embed-figma-block/embed-figma-service';
 import {
   EmbedGithubBlockComponent,
   type EmbedGithubBlockService,
-} from './embed-github-block/index.js';
-import { EmbedHtmlFullscreenToolbar } from './embed-html-block/components/fullscreen-toolbar.js';
-import { EmbedEdgelessHtmlBlockComponent } from './embed-html-block/embed-edgeless-html-block.js';
-import { EmbedHtmlBlockComponent } from './embed-html-block/index.js';
-import type { insertEmbedLinkedDocCommand } from './embed-linked-doc-block/commands/insert-embed-linked-doc.js';
+} from './embed-github-block';
+import { EmbedEdgelessGithubBlockComponent } from './embed-github-block/embed-edgeless-github-block';
+import { EmbedHtmlBlockComponent } from './embed-html-block';
+import { EmbedHtmlFullscreenToolbar } from './embed-html-block/components/fullscreen-toolbar';
+import { EmbedEdgelessHtmlBlockComponent } from './embed-html-block/embed-edgeless-html-block';
+import { EmbedLinkedDocBlockComponent } from './embed-linked-doc-block';
+import type { insertEmbedLinkedDocCommand } from './embed-linked-doc-block/commands/insert-embed-linked-doc';
 import type {
   InsertedLinkType,
   insertLinkByQuickSearchCommand,
-} from './embed-linked-doc-block/commands/insert-link-by-quick-search.js';
-import { EmbedEdgelessLinkedDocBlockComponent } from './embed-linked-doc-block/embed-edgeless-linked-doc-block.js';
-import type { EmbedLinkedDocBlockConfig } from './embed-linked-doc-block/embed-linked-doc-config.js';
-import { EmbedLinkedDocBlockComponent } from './embed-linked-doc-block/index.js';
-import { EmbedEdgelessLoomBlockComponent } from './embed-loom-block/embed-edgeless-loom-bock.js';
+} from './embed-linked-doc-block/commands/insert-link-by-quick-search';
+import { EmbedEdgelessLinkedDocBlockComponent } from './embed-linked-doc-block/embed-edgeless-linked-doc-block';
+import type { EmbedLinkedDocBlockConfig } from './embed-linked-doc-block/embed-linked-doc-config';
 import {
   EmbedLoomBlockComponent,
   type EmbedLoomBlockService,
-} from './embed-loom-block/index.js';
-import { EmbedSyncedDocCard } from './embed-synced-doc-block/components/embed-synced-doc-card.js';
-import { EmbedEdgelessSyncedDocBlockComponent } from './embed-synced-doc-block/embed-edgeless-synced-doc-block.js';
-import { EmbedSyncedDocBlockComponent } from './embed-synced-doc-block/index.js';
-import { EmbedEdgelessYoutubeBlockComponent } from './embed-youtube-block/embed-edgeless-youtube-block.js';
+} from './embed-loom-block';
+import { EmbedEdgelessLoomBlockComponent } from './embed-loom-block/embed-edgeless-loom-bock';
+import { EmbedSyncedDocBlockComponent } from './embed-synced-doc-block';
+import { EmbedSyncedDocCard } from './embed-synced-doc-block/components/embed-synced-doc-card';
+import { EmbedEdgelessSyncedDocBlockComponent } from './embed-synced-doc-block/embed-edgeless-synced-doc-block';
 import {
   EmbedYoutubeBlockComponent,
   type EmbedYoutubeBlockService,
-} from './embed-youtube-block/index.js';
+} from './embed-youtube-block';
+import { EmbedEdgelessYoutubeBlockComponent } from './embed-youtube-block/embed-edgeless-youtube-block';
 
 export function effects() {
   customElements.define(

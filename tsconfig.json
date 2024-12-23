@@ -159,7 +159,7 @@
     },
     // Blocksuite
     {
-      "path": "./blocksuite"
+      "path": "./blocksuite/affine/all"
     },
     // Others
     {

@@ -4,7 +4,7 @@
 import type { DocCollection } from '@blocksuite/affine/store';
 
 declare global {
-  // eslint-disable-next-line no-var
+  // oxlint-disable-next-line no-var
   var __appInfo: {
     electron: boolean;
     scheme: string;
