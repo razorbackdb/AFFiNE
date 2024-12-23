@@ -1,7 +1,4 @@
-import {
-  DEFAULT_NOTE_BACKGROUND_COLOR,
-  NoteDisplayMode,
-} from '@blocksuite/affine-model';
+import { DefaultTheme, NoteDisplayMode } from '@blocksuite/affine-model';
 import type {
   BlockSnapshot,
   DocSnapshot,
@@ -41,7 +38,7 @@ describe('snapshot to plain text', () => {
           flavour: 'affine:note',
           props: {
             xywh: '[0,0,800,95]',
-            background: DEFAULT_NOTE_BACKGROUND_COLOR,
+            background: DefaultTheme.noteBackgrounColor,
             index: 'a0',
             hidden: false,
             displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -194,7 +191,7 @@ describe('snapshot to plain text', () => {
           version: 1,
           props: {
             xywh: '[0,0,800,95]',
-            background: DEFAULT_NOTE_BACKGROUND_COLOR,
+            background: DefaultTheme.noteBackgrounColor,
             index: 'a0',
             hidden: false,
             displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -350,7 +347,7 @@ describe('snapshot to plain text', () => {
           flavour: 'affine:note',
           props: {
             xywh: '[0,0,800,95]',
-            background: DEFAULT_NOTE_BACKGROUND_COLOR,
+            background: DefaultTheme.noteBackgrounColor,
             index: 'a0',
             hidden: false,
             displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -420,7 +417,7 @@ describe('snapshot to plain text', () => {
           flavour: 'affine:note',
           props: {
             xywh: '[0,0,800,95]',
-            background: DEFAULT_NOTE_BACKGROUND_COLOR,
+            background: DefaultTheme.noteBackgrounColor,
             index: 'a0',
             hidden: false,
             displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -483,7 +480,7 @@ describe('snapshot to plain text', () => {
           flavour: 'affine:note',
           props: {
             xywh: '[0,0,800,95]',
-            background: DEFAULT_NOTE_BACKGROUND_COLOR,
+            background: DefaultTheme.noteBackgrounColor,
             index: 'a0',
             hidden: false,
             displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -649,7 +646,7 @@ describe('snapshot to plain text', () => {
               flavour: 'affine:note',
               props: {
                 xywh: '[0,0,800,95]',
-                background: DEFAULT_NOTE_BACKGROUND_COLOR,
+                background: DefaultTheme.noteBackgrounColor,
                 index: 'a0',
                 hidden: false,
                 displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -712,7 +709,7 @@ describe('snapshot to plain text', () => {
             version: 1,
             props: {
               xywh: '[0,0,800,95]',
-              background: DEFAULT_NOTE_BACKGROUND_COLOR,
+              background: DefaultTheme.noteBackgrounColor,
               index: 'a0',
               hidden: false,
               displayMode: NoteDisplayMode.DocAndEdgeless,
@@ -802,7 +799,7 @@ describe('snapshot to plain text', () => {
               version: 1,
               props: {
                 xywh: '[0,0,800,95]',
-                background: DEFAULT_NOTE_BACKGROUND_COLOR,
+                background: DefaultTheme.noteBackgrounColor,
                 index: 'a0',
                 hidden: false,
                 displayMode: 'both',
@@ -1161,7 +1158,7 @@ describe('snapshot to plain text', () => {
       flavour: 'affine:note',
       props: {
         xywh: '[0,0,800,95]',
-        background: DEFAULT_NOTE_BACKGROUND_COLOR,
+        background: DefaultTheme.noteBackgrounColor,
         index: 'a0',
         hidden: false,
         displayMode: NoteDisplayMode.DocAndEdgeless,

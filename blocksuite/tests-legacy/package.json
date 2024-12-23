@@ -11,6 +11,9 @@
     "@blocksuite/block-std": "workspace:*",
     "@blocksuite/global": "workspace:*",
     "@blocksuite/presets": "workspace:*",
+    "@toeverything/theme": "^1.1.2"
+  },
+  "devDependencies": {
     "@playwright/test": "=1.49.1"
   },
   "repository": {

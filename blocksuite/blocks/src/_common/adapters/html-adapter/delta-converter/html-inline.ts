@@ -37,7 +37,7 @@ export const htmlTextToDeltaMatcher: HtmlASTToDeltaMatcher = {
 
 export const htmlTextLikeElementToDeltaMatcher: HtmlASTToDeltaMatcher = {
   name: 'text-like-element',
-  match: ast => isElement(ast) && textLikeElementTags.has(ast.tagName),
+  match: ast => isElement(ast) && textLikeElementTags.includes(ast.tagName),
   toDelta: (ast, context) => {
     if (!isElement(ast)) {
       return [];

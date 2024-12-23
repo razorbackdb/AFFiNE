@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { TextUtils } from '@blocksuite/affine-block-surface';
 import type { RichText } from '@blocksuite/affine-components/rich-text';
 import type { ConnectorElementModel } from '@blocksuite/affine-model';

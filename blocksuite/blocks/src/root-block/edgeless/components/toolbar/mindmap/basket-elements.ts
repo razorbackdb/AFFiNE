@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CanvasElementType } from '@blocksuite/affine-block-surface';
 import { type MindmapStyle, TextElementModel } from '@blocksuite/affine-model';
 import { TelemetryProvider } from '@blocksuite/affine-shared/services';

@@ -62,7 +62,7 @@ export class FrameBlockComponent extends GfxBlockComponent<FrameBlockModel> {
     const { model, showBorder, rootService, std } = this;
     const backgroundColor = std
       .get(ThemeProvider)
-      .generateColorProperty(model.background, '--affine-platte-transparent');
+      .generateColorProperty(model.background, 'transparent');
     const _isNavigator =
       this.gfx.tool.currentToolName$.value === 'frameNavigator';
     const frameIndex = rootService.layer.getZIndex(model);

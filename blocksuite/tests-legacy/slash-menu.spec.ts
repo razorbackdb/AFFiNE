@@ -879,13 +879,13 @@ test.describe('slash menu with customize menu', () => {
       const SlashMenuWidget = window.$blocksuite.blocks.AffineSlashMenuWidget;
 
       class CustomSlashMenu extends SlashMenuWidget {
-        config = {
+        override config = {
           ...SlashMenuWidget.DEFAULT_CONFIG,
           items: [
             { groupName: 'Custom Menu' },
             {
               name: 'Custom Menu Item',
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
               icon: '' as any,
               action: () => {
                 // do nothing
@@ -893,7 +893,7 @@ test.describe('slash menu with customize menu', () => {
             },
             {
               name: 'Custom Menu Item',
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
               icon: '' as any,
               action: () => {
                 // do nothing

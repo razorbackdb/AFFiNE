@@ -49,9 +49,9 @@ export class PageClipboard {
       'image/png',
       'image/svg+xml',
       'image/webp',
-    ].forEach(type =>
-      this._std.clipboard.registerAdapter(type, ImageAdapter, 80)
-    );
+    ].forEach(type => {
+      this._std.clipboard.registerAdapter(type, ImageAdapter, 80);
+    });
     this._std.clipboard.registerAdapter('text/plain', MixTextAdapter, 70);
     this._std.clipboard.registerAdapter('*/*', AttachmentAdapter, 60);
     const copy = copyMiddleware(this._std);
@@ -74,7 +74,9 @@ export class PageClipboard {
           'image/png',
           'image/svg+xml',
           'image/webp',
-        ].forEach(type => this._std.clipboard.unregisterAdapter(type));
+        ].forEach(type => {
+          this._std.clipboard.unregisterAdapter(type);
+        });
         this._std.clipboard.unregisterAdapter('text/html');
         this._std.clipboard.unregisterAdapter('*/*');
         this._std.clipboard.unuse(copy);
