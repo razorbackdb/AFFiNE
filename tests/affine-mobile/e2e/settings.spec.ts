@@ -13,48 +13,15 @@ test('can open settings', async ({ page }) => {
 
 test('can change theme', async ({ page }) => {
   await openSettings(page);
-  await page
+  const select = page
     .getByTestId('setting-row')
     .filter({
       hasText: 'Color mode',
     })
-    .getByTestId('dropdown-select-trigger')
-    .click();
+    .getByTestId('native-dropdown-select-trigger');
 
-  await expect(
-    page.getByRole('dialog').filter({
-      has: page.getByRole('menuitem', { name: 'Light' }),
-    })
-  ).toBeVisible();
-
-  await page.getByRole('menuitem', { name: 'Dark' }).click();
+  await select.selectOption('light');
+  await select.selectOption('dark');
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-});
-
-test('can close change theme popover by clicking outside', async ({ page }) => {
-  await openSettings(page);
-  await page
-    .getByTestId('setting-row')
-    .filter({
-      hasText: 'Color mode',
-    })
-    .getByTestId('dropdown-select-trigger')
-    .click();
-
-  const themePopover = page.getByRole('dialog').filter({
-    has: page.getByRole('menuitem', { name: 'Light' }),
-  });
-
-  await expect(themePopover).toBeVisible();
-
-  // get a mouse position that is 10px offset to the top of theme popover
-  // and click
-  const mousePosition = await themePopover.boundingBox();
-  if (!mousePosition) {
-    throw new Error('theme popover is not visible');
-  }
-  await page.mouse.click(mousePosition.x, mousePosition.y - 10);
-
-  await expect(themePopover).not.toBeVisible();
 });
