@@ -15,7 +15,21 @@ extension IntelligentsFocusApertureView {
       assertionFailure()
       return
     }
-    let safeLayout = viewController.view.safeAreaLayoutGuide
+    var safeLayout = viewController.view.safeAreaLayoutGuide
+    if safeAreaInsets.bottom <= 0 {
+      let newSafeLayout = UILayoutGuide()
+      view.addLayoutGuide(newSafeLayout)
+      let verticalInset: CGFloat = 16
+      [
+        newSafeLayout.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        newSafeLayout.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        newSafeLayout.topAnchor.constraint(equalTo: view.topAnchor, constant: verticalInset),
+        newSafeLayout.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -verticalInset),
+      ]
+      .forEach { $0.isActive = true }
+      safeLayout = newSafeLayout
+    }
+
     frameConstraints = [
       // use safe area to layout content views
       leadingAnchor.constraint(equalTo: safeLayout.leadingAnchor),

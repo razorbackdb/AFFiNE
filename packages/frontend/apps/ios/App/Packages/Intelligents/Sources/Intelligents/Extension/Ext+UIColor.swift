@@ -9,6 +9,10 @@ import UIKit
 
 extension UIColor {
   static var accent: UIColor {
-    .accent
+    guard let color = UIColor(named: "accent", in: .module, compatibleWith: nil) else {
+      assertionFailure()
+      return .systemBlue
+    }
+    return color
   }
 }

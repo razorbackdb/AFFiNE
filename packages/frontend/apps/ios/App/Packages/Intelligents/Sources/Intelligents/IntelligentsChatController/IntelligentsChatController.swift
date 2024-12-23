@@ -30,6 +30,8 @@ public class IntelligentsChatController: UIViewController {
     super.init(nibName: nil, bundle: nil)
     title = "Chat with AI".localized()
 
+    overrideUserInterfaceStyle = .dark
+
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(keyboardWillDisappear),
@@ -97,7 +99,7 @@ public class IntelligentsChatController: UIViewController {
       tableView.topAnchor.constraint(equalTo: header.bottomAnchor),
       tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-      tableView.bottomAnchor.constraint(equalTo: inputBox.topAnchor),
+      tableView.bottomAnchor.constraint(equalTo: inputBox.topAnchor, constant: 16),
     ].forEach { $0.isActive = true }
 
     view.addSubview(progressView)
@@ -110,6 +112,7 @@ public class IntelligentsChatController: UIViewController {
     ].forEach { $0.isActive = true }
     progressView.style = .large
 
+    view.bringSubviewToFront(inputBox)
     inputBox.editor.controlBanner.sendButton.addTarget(
       self,
       action: #selector(send),
