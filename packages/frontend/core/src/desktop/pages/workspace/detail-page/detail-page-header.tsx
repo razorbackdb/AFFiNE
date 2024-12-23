@@ -189,6 +189,13 @@ export function DetailPageHeader(
             id: page.id,
           },
         },
+        canDrag: args => {
+          // hack for preventing drag when editing the page title
+          const editingElement =
+            args.element.contains(document.activeElement) &&
+            document.activeElement?.tagName === 'INPUT';
+          return !editingElement;
+        },
         onDragStart: () => {
           track.$.header.$.dragStart();
         },
