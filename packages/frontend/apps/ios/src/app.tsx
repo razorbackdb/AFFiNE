@@ -35,6 +35,7 @@ import { useTheme } from 'next-themes';
 import { Suspense, useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 
+import { BlocksuiteMenuConfigProvider } from './bs-menu-config';
 import { configureFetchProvider } from './fetch';
 import { ModalConfigProvider } from './modal-config';
 import { Cookie } from './plugins/cookie';
@@ -195,11 +196,13 @@ export function App() {
           <AffineContext store={getCurrentStore()}>
             <KeyboardThemeProvider />
             <ModalConfigProvider>
-              <RouterProvider
-                fallbackElement={<AppFallback />}
-                router={router}
-                future={future}
-              />
+              <BlocksuiteMenuConfigProvider>
+                <RouterProvider
+                  fallbackElement={<AppFallback />}
+                  router={router}
+                  future={future}
+                />
+              </BlocksuiteMenuConfigProvider>
             </ModalConfigProvider>
           </AffineContext>
         </I18nProvider>
