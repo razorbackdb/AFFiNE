@@ -27,8 +27,8 @@ import {
   ConnectorMode,
   DEFAULT_FRONT_END_POINT_STYLE,
   DEFAULT_REAR_END_POINT_STYLE,
-  LINE_COLORS,
   LineWidth,
+  PALETTES,
   PointStyle,
   StrokeStyle,
 } from '@blocksuite/affine-model';
@@ -368,7 +368,7 @@ export class EdgelessChangeConnectorButton extends WithDisposable(LitElement) {
                 .color=${selectedColor}
                 .colors=${colors}
                 .colorType=${type}
-                .palettes=${LINE_COLORS}
+                .palettes=${PALETTES}
                 .hollowCircle=${true}
               >
                 <div
@@ -385,7 +385,6 @@ export class EdgelessChangeConnectorButton extends WithDisposable(LitElement) {
                     selectedLineSize: selectedLineSize,
                     selectedLineStyle: selectedLineStyle,
                     onClick: (e: LineStyleEvent) => this._setConnectorStroke(e),
-                    lineStyles: [StrokeStyle.Solid, StrokeStyle.Dash],
                   })}
                 </div>
                 <editor-toolbar-separator

@@ -14,7 +14,7 @@ import {
 import {
   type ColorScheme,
   DEFAULT_NOTE_BACKGROUND_COLOR,
-  NOTE_BACKGROUND_COLORS,
+  NOTE_BACKGROUND_PALETTES,
   type NoteBlockModel,
   NoteDisplayMode,
   type StrokeStyle,
@@ -314,7 +314,7 @@ export class EdgelessChangeNoteButton extends WithDisposable(LitElement) {
                   .color=${background}
                   .colorType=${type}
                   .colors=${colors}
-                  .palettes=${NOTE_BACKGROUND_COLORS}
+                  .palettes=${NOTE_BACKGROUND_PALETTES}
                 >
                 </edgeless-color-picker-button>
               `;
@@ -335,7 +335,7 @@ export class EdgelessChangeNoteButton extends WithDisposable(LitElement) {
               >
                 <edgeless-color-panel
                   .value=${background}
-                  .options=${NOTE_BACKGROUND_COLORS}
+                  .options=${NOTE_BACKGROUND_PALETTES}
                   @select=${(e: ColorEvent) => this._setBackground(e.detail)}
                 >
                 </edgeless-color-panel>

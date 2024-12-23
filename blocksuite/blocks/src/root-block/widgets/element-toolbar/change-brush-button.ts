@@ -3,7 +3,7 @@ import type {
   BrushProps,
   ColorScheme,
 } from '@blocksuite/affine-model';
-import { LINE_COLORS, LineWidth } from '@blocksuite/affine-model';
+import { LineWidth, PALETTES } from '@blocksuite/affine-model';
 import { countBy, maxBy, WithDisposable } from '@blocksuite/global/utils';
 import { html, LitElement, nothing } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
@@ -136,7 +136,7 @@ export class EdgelessChangeBrushButton extends WithDisposable(LitElement) {
               .color=${selectedColor}
               .colors=${colors}
               .colorType=${type}
-              .palettes=${LINE_COLORS}
+              .palettes=${PALETTES}
             >
             </edgeless-color-picker-button>
           `;

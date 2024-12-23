@@ -1,8 +1,9 @@
-import type {
-  BrushElementModel,
-  GroupElementModel,
-  ShapeElementModel,
-  SurfaceBlockModel,
+import {
+  type BrushElementModel,
+  type GroupElementModel,
+  type ShapeElementModel,
+  StrokeColor,
+  type SurfaceBlockModel,
 } from '@blocksuite/blocks';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -71,7 +72,7 @@ describe('element model', () => {
     const element = model.getElementById(id)! as ShapeElementModel;
 
     expect(element.index).toBe('a0');
-    expect(element.strokeColor).toBe('--affine-palette-line-yellow');
+    expect(element.strokeColor).toBe(StrokeColor.Yellow);
     expect(element.strokeWidth).toBe(4);
   });
 
@@ -93,9 +94,7 @@ describe('element model', () => {
 
     const element = model.getElementById(id)! as ShapeElementModel;
 
-    expect(element.yMap.get('strokeColor')).toBe(
-      '--affine-palette-line-yellow'
-    );
+    expect(element.yMap.get('strokeColor')).toBe(StrokeColor.Yellow);
 
     element.strokeColor = '--affine-palette-line-black';
     expect(element.yMap.get('strokeColor')).toBe('--affine-palette-line-black');

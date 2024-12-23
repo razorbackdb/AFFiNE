@@ -13,7 +13,6 @@ import {
   type FrameBlockModel,
   getSurfaceBlock,
   LayoutType,
-  LineColor,
   type MindmapElementModel,
   MindmapStyle,
   NoteBackgroundColor,
@@ -22,6 +21,7 @@ import {
   type ShapeElementModel,
   ShapeFillColor,
   ShapeType,
+  StrokeColor,
   type TextElementModel,
 } from '@blocksuite/blocks';
 import { beforeEach, describe, expect, test } from 'vitest';
@@ -112,7 +112,7 @@ describe('apply last props', () => {
   test('connector', () => {
     const id = service.addElement('connector', { mode: 0 });
     const connector = service.getElementById(id) as ConnectorElementModel;
-    expect(connector.stroke).toBe(LineColor.Grey);
+    expect(connector.stroke).toBe(StrokeColor.Grey);
     expect(connector.strokeWidth).toBe(2);
     expect(connector.strokeStyle).toBe('solid');
     expect(connector.frontEndpointStyle).toBe('None');
@@ -124,7 +124,7 @@ describe('apply last props', () => {
     expect(connector2.strokeWidth).toBe(10);
     service.updateElement(id2, {
       labelStyle: {
-        color: LineColor.Magenta,
+        color: StrokeColor.Magenta,
         fontFamily: FontFamily.Kalam,
       },
     });
@@ -132,17 +132,14 @@ describe('apply last props', () => {
     const id3 = service.addElement('connector', { mode: 1 });
     const connector3 = service.getElementById(id3) as ConnectorElementModel;
     expect(connector3.strokeWidth).toBe(10);
-    expect(connector3.labelStyle.color).toBe(LineColor.Magenta);
+    expect(connector3.labelStyle.color).toBe(StrokeColor.Magenta);
     expect(connector3.labelStyle.fontFamily).toBe(FontFamily.Kalam);
   });
 
   test('brush', () => {
     const id = service.addElement('brush', {});
     const brush = service.getElementById(id) as BrushElementModel;
-    expect(brush.color).toEqual({
-      dark: LineColor.White,
-      light: LineColor.Black,
-    });
+    expect(brush.color).toEqual(StrokeColor.Black);
     expect(brush.lineWidth).toBe(4);
     service.updateElement(id, { lineWidth: 10 });
     const secondBrush = service.getElementById(
@@ -185,13 +182,13 @@ describe('apply last props', () => {
     expect(text.color).toBe(DEFAULT_TEXT_COLOR);
     expect(text.fontFamily).toBe(FontFamily.Inter);
     service.updateElement(id, {
-      color: LineColor.Green,
+      color: StrokeColor.Green,
       fontFamily: FontFamily.OrelegaOne,
     });
 
     const id2 = service.addBlock('affine:edgeless-text', {}, surface!.id);
     const text2 = service.getElementById(id2) as EdgelessTextBlockModel;
-    expect(text2.color).toBe(LineColor.Green);
+    expect(text2.color).toBe(StrokeColor.Green);
     expect(text2.fontFamily).toBe(FontFamily.OrelegaOne);
   });
 
@@ -219,7 +216,7 @@ describe('apply last props', () => {
     const surface = getSurfaceBlock(doc);
     const id = service.addBlock('affine:frame', {}, surface!.id);
     const note = service.getElementById(id) as FrameBlockModel;
-    expect(note.background).toBe('--affine-palette-transparent');
+    expect(note.background).toBe('transparent');
     service.updateElement(id, {
       background: FrameBackgroundColor.Purple,
     });

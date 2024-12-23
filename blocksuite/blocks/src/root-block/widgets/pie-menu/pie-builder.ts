@@ -1,6 +1,6 @@
 import { assertExists } from '@blocksuite/global/utils';
+import { html } from 'lit';
 
-import { ColorUnit } from '../../edgeless/components/panel/color-panel.js';
 import type {
   ActionFunction,
   PieColorNodeModel,
@@ -117,7 +117,11 @@ export class PieMenuBuilder {
     const icon = (ctx: PieMenuContext) => {
       const color = props.active(ctx);
 
-      return ColorUnit(color, { hollowCircle: hollow });
+      return html`<edgeless-color-button
+        class="large"
+        .color=${color}
+        .hollowCircle=${hollow}
+      ></edgeless-color-button>`;
     };
 
     const colorPickerNode: PieSubmenuNodeModel = {
@@ -127,7 +131,12 @@ export class PieMenuBuilder {
       role: 'color-picker',
       openOnHover: props.openOnHover ?? true,
       children: props.colors.map(({ color }) => ({
-        icon: () => ColorUnit(color, { hollowCircle: hollow }),
+        icon: () =>
+          html`<edgeless-color-button
+            class="large"
+            .color=${color}
+            .hollowCircle=${hollow}
+          ></edgeless-color-button>`,
         type: 'color',
         hollowCircle: hollow,
         label: color,
