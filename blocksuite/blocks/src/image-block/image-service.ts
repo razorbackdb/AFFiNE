@@ -1,7 +1,4 @@
-import {
-  FileDropManager,
-  type FileDropOptions,
-} from '@blocksuite/affine-components/drag-indicator';
+import { FileDropConfigExtension } from '@blocksuite/affine-components/drag-indicator';
 import { ImageBlockSchema } from '@blocksuite/affine-model';
 import {
   DragHandleConfigExtension,
@@ -23,57 +20,53 @@ import type { ImageBlockComponent } from './image-block.js';
 import { ImageEdgelessBlockComponent } from './image-edgeless-block.js';
 import { addSiblingImageBlock } from './utils.js';
 
+// bytes.parse('2GB')
+const maxFileSize = 2147483648;
+
 export class ImageBlockService extends BlockService {
   static override readonly flavour = ImageBlockSchema.model.flavour;
 
   static setImageProxyURL = setImageProxyMiddlewareURL;
 
-  private readonly _fileDropOptions: FileDropOptions = {
-    flavour: this.flavour,
-    onDrop: ({ files, targetModel, place, point }) => {
-      const imageFiles = files.filter(file => file.type.startsWith('image/'));
-      if (!imageFiles.length) return false;
-
-      if (targetModel && !matchFlavours(targetModel, ['affine:surface'])) {
-        addSiblingImageBlock(
-          this.host,
-          imageFiles,
-          this.maxFileSize,
-          targetModel,
-          place
-        );
-        return true;
-      }
-
-      if (isInsideEdgelessEditor(this.host)) {
-        const gfx = this.std.get(GfxControllerIdentifier);
-        point = gfx.viewport.toViewCoordFromClientCoord(point);
-        addImages(this.std, files, point).catch(console.error);
-
-        this.std.getOptional(TelemetryProvider)?.track('CanvasElementAdded', {
-          control: 'canvas:drop',
-          page: 'whiteboard editor',
-          module: 'toolbar',
-          segment: 'toolbar',
-          type: 'image',
-        });
-        return true;
-      }
-
-      return false;
-    },
-  };
-
-  fileDropManager!: FileDropManager;
-
-  maxFileSize = 10 * 1000 * 1000; // 10MB (default)
-
-  override mounted(): void {
-    super.mounted();
-
-    this.fileDropManager = new FileDropManager(this.std, this._fileDropOptions);
-  }
+  maxFileSize = maxFileSize;
 }
+
+export const ImageDropOption = FileDropConfigExtension({
+  flavour: ImageBlockSchema.model.flavour,
+  onDrop: ({ files, targetModel, place, point, std }) => {
+    const imageFiles = files.filter(file => file.type.startsWith('image/'));
+    if (!imageFiles.length) return false;
+
+    if (targetModel && !matchFlavours(targetModel, ['affine:surface'])) {
+      addSiblingImageBlock(
+        std.host,
+        imageFiles,
+        // TODO: use max file size from service
+        maxFileSize,
+        targetModel,
+        place
+      );
+      return true;
+    }
+
+    if (isInsideEdgelessEditor(std.host)) {
+      const gfx = std.get(GfxControllerIdentifier);
+      point = gfx.viewport.toViewCoordFromClientCoord(point);
+      addImages(std, files, point).catch(console.error);
+
+      std.getOptional(TelemetryProvider)?.track('CanvasElementAdded', {
+        control: 'canvas:drop',
+        page: 'whiteboard editor',
+        module: 'toolbar',
+        segment: 'toolbar',
+        type: 'image',
+      });
+      return true;
+    }
+
+    return false;
+  },
+});
 
 export const ImageDragHandleOption = DragHandleConfigExtension({
   flavour: ImageBlockSchema.model.flavour,

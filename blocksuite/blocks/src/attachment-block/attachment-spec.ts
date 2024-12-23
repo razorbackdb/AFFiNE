@@ -9,6 +9,7 @@ import { AttachmentBlockNotionHtmlAdapterExtension } from './adapters/notion-htm
 import {
   AttachmentBlockService,
   AttachmentDragHandleOption,
+  AttachmentDropOption,
 } from './attachment-service.js';
 import {
   AttachmentEmbedConfigExtension,
@@ -23,6 +24,7 @@ export const AttachmentBlockSpec: ExtensionType[] = [
       ? literal`affine-edgeless-attachment`
       : literal`affine-attachment`;
   }),
+  AttachmentDropOption,
   AttachmentDragHandleOption,
   AttachmentEmbedConfigExtension(),
   AttachmentEmbedService,

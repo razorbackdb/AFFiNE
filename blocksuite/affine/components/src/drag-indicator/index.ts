@@ -1,6 +1,7 @@
 import { DragIndicator } from './drag-indicator.js';
 export {
-  FileDropManager,
+  FileDropConfigExtension,
+  FileDropExtension,
   type FileDropOptions,
   type onDropProps,
 } from './file-drop-manager.js';

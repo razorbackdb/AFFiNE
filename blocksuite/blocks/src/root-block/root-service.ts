@@ -1,7 +1,3 @@
-import {
-  FileDropManager,
-  type FileDropOptions,
-} from '@blocksuite/affine-components/drag-indicator';
 import { RootBlockSchema } from '@blocksuite/affine-model';
 import type { BlockComponent } from '@blocksuite/block-std';
 import { BlockService } from '@blocksuite/block-std';
@@ -15,15 +11,6 @@ import type { RootBlockComponent } from './types.js';
 
 export abstract class RootService extends BlockService {
   static override readonly flavour = RootBlockSchema.model.flavour;
-
-  private readonly _fileDropOptions: FileDropOptions = {
-    flavour: this.flavour,
-  };
-
-  readonly fileDropManager = new FileDropManager(
-    this.std,
-    this._fileDropOptions
-  );
 
   transformers = {
     markdown: MarkdownTransformer,

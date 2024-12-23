@@ -179,6 +179,12 @@ export class UIEventDispatcher extends LifeCycleWatcher {
     this.disposables.addFromEvent(this.host, 'dragover', () => {
       this._setActive(true);
     });
+    this.disposables.addFromEvent(this.host, 'dragenter', () => {
+      this._setActive(true);
+    });
+    this.disposables.addFromEvent(this.host, 'dragleave', () => {
+      this._setActive(false);
+    });
     this.disposables.addFromEvent(this.host, 'dragend', () => {
       this._setActive(false);
     });

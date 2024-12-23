@@ -1,3 +1,4 @@
+import { FileDropExtension } from '@blocksuite/affine-components/drag-indicator';
 import {
   DNDAPIExtension,
   DocDisplayMetaService,
@@ -75,4 +76,5 @@ export const PageRootBlockSpec: ExtensionType[] = [
   DNDAPIExtension,
   DocDisplayMetaService,
   RootBlockAdapterExtensions,
+  FileDropExtension,
 ].flat();

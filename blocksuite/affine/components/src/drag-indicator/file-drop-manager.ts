@@ -9,7 +9,7 @@ import {
   type BlockStdScope,
   type EditorHost,
   type ExtensionType,
-  StdIdentifier,
+  LifeCycleWatcher,
 } from '@blocksuite/block-std';
 import { createIdentifier } from '@blocksuite/global/di';
 import type { IVec } from '@blocksuite/global/utils';
@@ -19,6 +19,7 @@ import type { BlockModel } from '@blocksuite/store';
 import type { DragIndicator } from './index.js';
 
 export type onDropProps = {
+  std: BlockStdScope;
   files: File[];
   targetModel: BlockModel | null;
   place: 'before' | 'after';
@@ -27,15 +28,15 @@ export type onDropProps = {
 
 export type FileDropOptions = {
   flavour: string;
-  onDrop?: ({ files, targetModel, place, point }: onDropProps) => boolean;
+  onDrop?: (onDropProps: onDropProps) => boolean;
 };
 
-export class FileDropManager {
-  private static _dropResult: DropResult | null = null;
+export class FileDropExtension extends LifeCycleWatcher {
+  static override readonly key = 'FileDropExtension';
 
-  private static _bound = false;
+  static dropResult: DropResult | null = null;
 
-  private static get _indicator() {
+  static get indicator() {
     let indicator = document.querySelector<DragIndicator>(
       'affine-drag-indicator'
     );
@@ -50,41 +51,9 @@ export class FileDropManager {
     return indicator;
   }
 
-  private readonly _std: BlockStdScope;
-
-  private readonly _fileDropOptions: FileDropOptions;
-
-  private readonly _onDrop = (event: DragEvent) => {
-    FileDropManager._indicator.rect = null;
-
-    const { onDrop } = this._fileDropOptions;
-    if (!onDrop) return;
-
-    const dataTransfer = event.dataTransfer;
-    if (!dataTransfer) return;
-
-    const effectAllowed = dataTransfer.effectAllowed;
-    if (effectAllowed === 'none') return;
-
-    const droppedFiles = dataTransfer.files;
-    if (!droppedFiles || !droppedFiles.length) return;
-
-    event.preventDefault();
-
-    const { targetModel, type: place } = this;
-    const { x, y } = event;
-
-    return onDrop({
-      files: [...droppedFiles],
-      targetModel,
-      place,
-      point: [x, y],
-    });
-  };
-
   onDragLeave = () => {
-    FileDropManager._dropResult = null;
-    FileDropManager._indicator.rect = null;
+    FileDropExtension.dropResult = null;
+    FileDropExtension.indicator.rect = null;
   };
 
   onDragOver = (event: DragEvent) => {
@@ -103,30 +72,22 @@ export class FileDropManager {
     let result: DropResult | null = null;
     if (element) {
       const model = element.model;
-      const parent = this.doc.getParent(model);
+      const parent = this.std.doc.getParent(model);
       if (!matchFlavours(parent, ['affine:surface' as BlockSuite.Flavour])) {
         result = calcDropTarget(point, model, element);
       }
     }
     if (result) {
-      FileDropManager._dropResult = result;
-      FileDropManager._indicator.rect = result.rect;
+      FileDropExtension.dropResult = result;
+      FileDropExtension.indicator.rect = result.rect;
     } else {
-      FileDropManager._dropResult = null;
-      FileDropManager._indicator.rect = null;
+      FileDropExtension.dropResult = null;
+      FileDropExtension.indicator.rect = null;
     }
   };
 
-  get doc() {
-    return this._std.doc;
-  }
-
-  get editorHost(): EditorHost {
-    return this._std.host;
-  }
-
   get targetModel(): BlockModel | null {
-    let targetModel = FileDropManager._dropResult?.modelState.model || null;
+    let targetModel = FileDropExtension.dropResult?.modelState.model || null;
 
     if (!targetModel && isInsidePageEditor(this.editorHost)) {
       const rootModel = this.doc.root;
@@ -158,42 +119,76 @@ export class FileDropManager {
     return targetModel;
   }
 
+  get doc() {
+    return this.std.doc;
+  }
+
+  get editorHost(): EditorHost {
+    return this.std.host;
+  }
+
   get type(): 'before' | 'after' {
-    return !FileDropManager._dropResult ||
-      FileDropManager._dropResult.type !== 'before'
+    return !FileDropExtension.dropResult ||
+      FileDropExtension.dropResult.type !== 'before'
       ? 'after'
       : 'before';
   }
 
-  constructor(std: BlockStdScope, fileDropOptions: FileDropOptions) {
-    this._std = std;
-    this._fileDropOptions = fileDropOptions;
+  private readonly _onDrop = (event: DragEvent, options: FileDropOptions) => {
+    FileDropExtension.indicator.rect = null;
 
-    if (fileDropOptions.onDrop) {
-      std.event.add('nativeDrop', context => {
-        const event = context.get('dndState');
-        this._onDrop(event.raw);
-      });
+    const { onDrop } = options;
+    if (!onDrop) return;
+
+    const dataTransfer = event.dataTransfer;
+    if (!dataTransfer) return;
+
+    const effectAllowed = dataTransfer.effectAllowed;
+    if (effectAllowed === 'none') return;
+
+    const droppedFiles = dataTransfer.files;
+    if (!droppedFiles || !droppedFiles.length) return;
+
+    const { targetModel, type: place } = this;
+    const { x, y } = event;
+
+    const drop = onDrop({
+      std: this.std,
+      files: [...droppedFiles],
+      targetModel,
+      place,
+      point: [x, y],
+    });
+
+    if (drop) {
+      event.preventDefault();
     }
+    return drop;
+  };
 
-    if (!FileDropManager._bound) {
-      FileDropManager._bound = true;
-      std.event.add('nativeDragOver', context => {
-        const event = context.get('dndState');
-        this.onDragOver(event.raw);
-      });
-      std.event.add('nativeDragLeave', () => {
-        this.onDragLeave();
-      });
-    }
+  override mounted() {
+    super.mounted();
+    const std = this.std;
 
-    std.event.disposables.add(() => {
-      FileDropManager._bound = false;
+    std.event.add('nativeDragOver', context => {
+      const event = context.get('dndState');
+      this.onDragOver(event.raw);
+    });
+    std.event.add('nativeDragLeave', () => {
+      this.onDragLeave();
+    });
+    std.provider.getAll(FileDropConfigExtensionIdentifier).forEach(options => {
+      if (options.onDrop) {
+        std.event.add('nativeDrop', context => {
+          const event = context.get('dndState');
+          return this._onDrop(event.raw, options);
+        });
+      }
     });
   }
 }
 
-const FileDropConfigExtensionIdentifier = createIdentifier<FileDropManager>(
+const FileDropConfigExtensionIdentifier = createIdentifier<FileDropOptions>(
   'FileDropConfigExtension'
 );
 
@@ -203,10 +198,7 @@ export const FileDropConfigExtension = (
   const identifier = FileDropConfigExtensionIdentifier(options.flavour);
   return {
     setup: di => {
-      di.addImpl(
-        identifier,
-        provider => new FileDropManager(provider.get(StdIdentifier), options)
-      );
+      di.addImpl(identifier, () => options);
     },
   };
 };

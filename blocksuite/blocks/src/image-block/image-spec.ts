@@ -10,7 +10,11 @@ import { literal } from 'lit/static-html.js';
 
 import { ImageBlockAdapterExtensions } from './adapters/extension.js';
 import { commands } from './commands/index.js';
-import { ImageBlockService, ImageDragHandleOption } from './image-service.js';
+import {
+  ImageBlockService,
+  ImageDragHandleOption,
+  ImageDropOption,
+} from './image-service.js';
 
 export const ImageBlockSpec: ExtensionType[] = [
   FlavourExtension('affine:image'),
@@ -29,6 +33,7 @@ export const ImageBlockSpec: ExtensionType[] = [
     imageToolbar: literal`affine-image-toolbar-widget`,
   }),
   ImageDragHandleOption,
+  ImageDropOption,
   ImageSelectionExtension,
   ImageBlockAdapterExtensions,
 ].flat();
