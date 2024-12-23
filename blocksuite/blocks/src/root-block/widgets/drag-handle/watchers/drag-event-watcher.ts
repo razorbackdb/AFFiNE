@@ -113,13 +113,12 @@ export class DragEventWatcher {
     const fileLength = raw.dataTransfer?.files.length ?? 0;
     // If drop files, should let file drop extension handle it
     if (fileLength > 0) {
-      return false;
+      return;
     }
     this._onDrop(context);
     this._std.selection.setGroup('gfx', []);
     this.widget.clearRaf();
     this.widget.hide(true);
-    return true;
   };
 
   private readonly _onDragMove = (state: DndEventState) => {
