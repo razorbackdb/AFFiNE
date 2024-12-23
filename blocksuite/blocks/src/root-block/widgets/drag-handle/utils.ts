@@ -10,6 +10,7 @@ import {
   getBlockProps,
   getClosestBlockComponentByElement,
   getClosestBlockComponentByPoint,
+  getDropRectByPoint,
   getRectByBlockComponent,
   matchFlavours,
 } from '@blocksuite/affine-shared/utils';
@@ -21,10 +22,6 @@ import type {
 import { Point, Rect } from '@blocksuite/global/utils';
 import type { BlockModel } from '@blocksuite/store';
 
-import {
-  getDropRectByPoint,
-  getHoveringNote,
-} from '../../../_common/utils/index.js';
 import {
   DRAG_HANDLE_CONTAINER_HEIGHT,
   DRAG_HANDLE_CONTAINER_OFFSET_LEFT,
@@ -197,7 +194,9 @@ export function calcDropTarget(
 ): DropResult | null {
   let type: DropType | 'none' = 'none';
   const height = 3 * scale;
-  const { rect: domRect } = getDropRectByPoint(point, model, element);
+  const dropRect = getDropRectByPoint(point, model, element);
+  if (!dropRect) return null;
+  const { rect: domRect } = dropRect;
 
   const distanceToTop = Math.abs(domRect.top - point.y);
   const distanceToBottom = Math.abs(domRect.bottom - point.y);
@@ -347,4 +346,18 @@ export function getDuplicateBlocks(blocks: BlockModel[]) {
     blockProps: getBlockProps(block),
   }));
   return duplicateBlocks;
+}
+
+/**
+ * Get hovering note with given a point in edgeless mode.
+ */
+function getHoveringNote(point: Point) {
+  return (
+    document.elementsFromPoint(point.x, point.y).find(isEdgelessChildNote) ||
+    null
+  );
+}
+
+function isEdgelessChildNote({ classList }: Element) {
+  return classList.contains('note-background');
 }

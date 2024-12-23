@@ -1,6 +1,7 @@
 import { useConfirmModal } from '@affine/component';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { type I18nString, useI18n } from '@affine/i18n';
+import { InformationFillDuotoneIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback, useEffect } from 'react';
 
@@ -32,7 +33,9 @@ export const QuotaCheck = ({
   const workspaceProfile = workspacesService.getProfile(workspaceMeta);
   const quota = useLiveData(workspaceQuota.quota$);
   const usedPercent = useLiveData(workspaceQuota.percent$);
-  const isOwner = useLiveData(workspaceProfile.profile$)?.isOwner;
+  const profile = useLiveData(workspaceProfile.profile$);
+  const isOwner = profile?.isOwner;
+  const isTeam = profile?.isTeam;
   const globalDialogService = useService(GlobalDialogService);
   const t = useI18n();
 
@@ -51,7 +54,7 @@ export const QuotaCheck = ({
   }, [workspaceQuota]);
 
   useEffect(() => {
-    if (workspaceMeta.flavour === 'local' || !quota) {
+    if (workspaceMeta.flavour === 'local' || !quota || isTeam) {
       return;
     }
     const memberOverflow = quota.memberCount > quota.memberLimit;
@@ -65,7 +68,7 @@ export const QuotaCheck = ({
 
     if (memberOverflow || storageOverflow) {
       openConfirmModal({
-        title: t.t(message.title),
+        title: <Title title={t.t(message.title)} />,
         description: t.t(message.description),
         confirmText: t.t(message.confirmText),
         cancelText: message.cancelText ? t.t(message.cancelText) : undefined,
@@ -87,6 +90,7 @@ export const QuotaCheck = ({
     }
   }, [
     isOwner,
+    isTeam,
     onConfirm,
     openConfirmModal,
     quota,
@@ -103,7 +107,7 @@ const messages: Record<
 > = {
   owner: {
     both: {
-      title: 'com.affine.payment.sync-paused.owner.title',
+      title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.owner.both.description',
       tips: [
         'com.affine.payment.sync-paused.owner.both.tips-1',
@@ -113,7 +117,7 @@ const messages: Record<
       confirmText: 'com.affine.payment.upgrade',
     },
     storage: {
-      title: 'com.affine.payment.sync-paused.owner.title',
+      title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.owner.storage.description',
       tips: [
         'com.affine.payment.sync-paused.owner.storage.tips-1',
@@ -123,7 +127,7 @@ const messages: Record<
       confirmText: 'com.affine.payment.upgrade',
     },
     member: {
-      title: 'com.affine.payment.sync-paused.owner.title',
+      title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.owner.member.description',
       tips: [
         'com.affine.payment.sync-paused.owner.member.tips-1',
@@ -135,17 +139,17 @@ const messages: Record<
   },
   member: {
     both: {
-      title: 'com.affine.payment.sync-paused.member.title',
+      title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.member.both.description',
       confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
     storage: {
-      title: 'com.affine.payment.sync-paused.member.title',
+      title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.member.storage.description',
       confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
     member: {
-      title: 'com.affine.payment.sync-paused.member.title',
+      title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.member.member.description',
       confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
@@ -183,6 +187,15 @@ const Tips = ({ tips }: { tips?: I18nString[] }) => {
           {t.t(tip)}
         </div>
       ))}
+    </div>
+  );
+};
+
+const Title = ({ title }: { title: string }) => {
+  return (
+    <div className={styles.modalTitle}>
+      <InformationFillDuotoneIcon className={styles.errorIcon} />
+      {title}
     </div>
   );
 };

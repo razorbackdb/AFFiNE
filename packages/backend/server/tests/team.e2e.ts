@@ -120,7 +120,6 @@ const init = async (
         owner.token.token,
         workspace.id,
         member.email,
-        permission,
         shouldSendEmail
       );
       await acceptInviteById(app, workspace.id, inviteId, shouldSendEmail);
@@ -133,10 +132,16 @@ const init = async (
         owner.token.token,
         teamWorkspace.id,
         member.email,
-        permission,
         shouldSendEmail
       );
       await acceptInviteById(app, teamWorkspace.id, inviteId, shouldSendEmail);
+      await grantMember(
+        app,
+        owner.token.token,
+        teamWorkspace.id,
+        member.id,
+        permission
+      );
     }
 
     return member;
@@ -437,8 +442,11 @@ test('should be able to manage invite link', async t => {
     read,
   } = await init(app, 4);
 
-  for (const workspace of [ws, tws]) {
-    for (const manager of [owner, admin]) {
+  for (const [workspace, managers] of [
+    [ws, [owner]],
+    [tws, [owner, admin]],
+  ] as const) {
+    for (const manager of managers) {
       const { link } = await createInviteLink(
         app,
         manager.token.token,
@@ -646,16 +654,21 @@ test('should be able to emit events', async t => {
     const { teamWorkspace: tws, inviteBatch } = await init(app, 4);
 
     await inviteBatch(['m1@affine.pro', 'm2@affine.pro']);
-    t.true(
-      event.emit.calledOnceWith('workspace.members.updated', {
+    const [membersUpdated] = event.emit
+      .getCalls()
+      .map(call => call.args)
+      .toReversed();
+    t.deepEqual(membersUpdated, [
+      'workspace.members.updated',
+      {
         workspaceId: tws.id,
         count: 6,
-      })
-    );
+      },
+    ]);
   }
 
   {
-    const { teamWorkspace: tws, owner, createInviteLink } = await init(app, 10);
+    const { teamWorkspace: tws, owner, createInviteLink } = await init(app);
     const [, invite] = await createInviteLink(tws);
     const user = await invite('m3@affine.pro');
     const { members } = await getWorkspace(app, owner.token.token, tws.id);
@@ -677,6 +690,41 @@ test('should be able to emit events', async t => {
         { userId: user.id, workspaceId: tws.id },
       ],
       'should emit review requested event'
+    );
+  }
+
+  {
+    const { teamWorkspace: tws, owner, read } = await init(app);
+    await grantMember(app, owner.token.token, tws.id, read.id, 'Admin');
+    t.deepEqual(
+      event.emit.lastCall.args,
+      [
+        'workspace.members.roleChanged',
+        { userId: read.id, workspaceId: tws.id, permission: Permission.Admin },
+      ],
+      'should emit role changed event'
+    );
+
+    await grantMember(app, owner.token.token, tws.id, read.id, 'Owner');
+    const [ownerTransferred, roleChanged] = event.emit
+      .getCalls()
+      .map(call => call.args)
+      .toReversed();
+    t.deepEqual(
+      roleChanged,
+      [
+        'workspace.members.roleChanged',
+        { userId: read.id, workspaceId: tws.id, permission: Permission.Owner },
+      ],
+      'should emit role changed event'
+    );
+    t.deepEqual(
+      ownerTransferred,
+      [
+        'workspace.members.ownerTransferred',
+        { email: owner.email, workspaceId: tws.id },
+      ],
+      'should emit owner transferred event'
     );
   }
 });

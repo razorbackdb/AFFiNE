@@ -220,7 +220,6 @@ enum ErrorNames {
   BLOB_QUOTA_EXCEEDED
   CANNOT_DELETE_ALL_ADMIN_ACCOUNT
   CANNOT_DELETE_OWN_ACCOUNT
-  CANT_CHANGE_SPACE_OWNER
   CANT_UPDATE_ONETIME_PAYMENT_SUBSCRIPTION
   CAPTCHA_VERIFICATION_FAILED
   COPILOT_ACTION_TAKEN
@@ -526,7 +525,7 @@ type Mutation {
   """Create a chat session"""
   forkCopilotSession(options: ForkChatSessionInput!): String!
   grantMember(permission: Permission!, userId: String!, workspaceId: String!): String!
-  invite(email: String!, permission: Permission!, sendInviteMail: Boolean, workspaceId: String!): String!
+  invite(email: String!, permission: Permission @deprecated(reason: "never used"), sendInviteMail: Boolean, workspaceId: String!): String!
   inviteBatch(emails: [String!]!, sendInviteMail: Boolean, workspaceId: String!): [InviteResult!]!
   leaveWorkspace(sendLeaveMail: Boolean, workspaceId: String!, workspaceName: String @deprecated(reason: "no longer used")): Boolean!
   publishPage(mode: PublicPageMode = Page, pageId: String!, workspaceId: String!): WorkspacePage!

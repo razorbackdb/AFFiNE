@@ -75,15 +75,10 @@ export class WorkspacePermission extends Entity {
     })
   );
 
-  async inviteMember(
-    email: string,
-    permission: Permission,
-    sendInviteMail?: boolean
-  ) {
+  async inviteMember(email: string, sendInviteMail?: boolean) {
     return await this.store.inviteMember(
       this.workspaceService.workspace.id,
       email,
-      permission,
       sendInviteMail
     );
   }

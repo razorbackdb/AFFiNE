@@ -6,7 +6,12 @@ import { URLHelper } from '../helpers';
 import { metrics } from '../metrics';
 import type { MailerService, Options } from './mailer';
 import { MAILER_SERVICE } from './mailer';
-import { emailTemplate } from './template';
+import {
+  emailTemplate,
+  getRoleChangedTemplate,
+  type RoleChangedMailParams,
+} from './template';
+
 @Injectable()
 export class MailService {
   constructor(
@@ -308,6 +313,24 @@ export class MailService {
     const html = emailTemplate({
       title: 'Request declined',
       content: `Your request to join ${workspaceName} has been declined by the workspace admin.`,
+    });
+    return this.sendMail({ to, subject: title, html });
+  }
+
+  async sendRoleChangedEmail(to: string, ws: RoleChangedMailParams) {
+    const { subject, title, content } = getRoleChangedTemplate(ws);
+    const html = emailTemplate({ title, content });
+    console.log({ subject, title, content, to });
+    return this.sendMail({ to, subject, html });
+  }
+
+  async sendOwnerTransferred(to: string, ws: { name: string }) {
+    const { name: workspaceName } = ws;
+    const title = `Your ownership of ${workspaceName} has been transferred`;
+
+    const html = emailTemplate({
+      title: 'Ownership transferred',
+      content: `You have transferred ownership of ${workspaceName}. You are now a admin in this workspace.`,
     });
     return this.sendMail({ to, subject: title, html });
   }

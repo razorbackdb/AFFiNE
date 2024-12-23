@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* oxlint-disable */
 // AUTO GENERATED FILE
 import { createUnionType, Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 
@@ -238,12 +238,6 @@ class SpaceOwnerNotFoundDataType {
 export class SpaceOwnerNotFound extends UserFriendlyError {
   constructor(args: SpaceOwnerNotFoundDataType, message?: string | ((args: SpaceOwnerNotFoundDataType) => string)) {
     super('internal_server_error', 'space_owner_not_found', message, args);
-  }
-}
-
-export class CantChangeSpaceOwner extends UserFriendlyError {
-  constructor(message?: string) {
-    super('action_forbidden', 'cant_change_space_owner', message);
   }
 }
 @ObjectType()
@@ -630,7 +624,6 @@ export enum ErrorNames {
   ALREADY_IN_SPACE,
   SPACE_ACCESS_DENIED,
   SPACE_OWNER_NOT_FOUND,
-  CANT_CHANGE_SPACE_OWNER,
   DOC_NOT_FOUND,
   DOC_ACCESS_DENIED,
   VERSION_REJECTED,

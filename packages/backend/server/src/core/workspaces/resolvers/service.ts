@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { getStreamAsBuffer } from 'get-stream';
 
-import { Cache, MailService } from '../../../base';
+import { Cache, MailService, UserNotFound } from '../../../base';
 import { DocContentService } from '../../doc-renderer';
-import { PermissionService } from '../../permission';
+import { Permission, PermissionService } from '../../permission';
 import { WorkspaceBlobStorage } from '../../storage';
 import { UserService } from '../../user';
 
@@ -15,6 +15,13 @@ export type InviteInfo = {
   workspaceId: string;
   inviterUserId?: string;
   inviteeUserId?: string;
+};
+
+const PermissionToRole = {
+  [Permission.Read]: 'readonly' as const,
+  [Permission.Write]: 'member' as const,
+  [Permission.Admin]: 'admin' as const,
+  [Permission.Owner]: 'owner' as const,
 };
 
 @Injectable()
@@ -75,6 +82,27 @@ export class WorkspaceService {
       avatar,
       id: workspaceId,
       name: workspaceContent?.name ?? '',
+    };
+  }
+
+  private async getInviteeEmailTarget(inviteId: string) {
+    const { workspaceId, inviteeUserId } = await this.getInviteInfo(inviteId);
+    if (!inviteeUserId) {
+      this.logger.error(`Invitee user not found for inviteId: ${inviteId}`);
+      return;
+    }
+    const workspace = await this.getWorkspaceInfo(workspaceId);
+    const invitee = await this.user.findUserById(inviteeUserId);
+    if (!invitee) {
+      this.logger.error(
+        `Invitee user not found in workspace: ${workspaceId}, userId: ${inviteeUserId}`
+      );
+      return;
+    }
+
+    return {
+      email: invitee.email,
+      workspace,
     };
   }
 
@@ -167,24 +195,21 @@ export class WorkspaceService {
     await this.mailer.sendReviewDeclinedEmail(email, { name: workspaceName });
   }
 
-  private async getInviteeEmailTarget(inviteId: string) {
-    const { workspaceId, inviteeUserId } = await this.getInviteInfo(inviteId);
-    if (!inviteeUserId) {
-      this.logger.error(`Invitee user not found for inviteId: ${inviteId}`);
-      return;
-    }
-    const workspace = await this.getWorkspaceInfo(workspaceId);
-    const invitee = await this.user.findUserById(inviteeUserId);
-    if (!invitee) {
-      this.logger.error(
-        `Invitee user not found in workspace: ${workspaceId}, userId: ${inviteeUserId}`
-      );
-      return;
-    }
+  async sendRoleChangedEmail(
+    userId: string,
+    ws: { id: string; role: Permission }
+  ) {
+    const user = await this.user.findUserById(userId);
+    if (!user) throw new UserNotFound();
+    const workspace = await this.getWorkspaceInfo(ws.id);
+    await this.mailer.sendRoleChangedEmail(user?.email, {
+      name: workspace.name,
+      role: PermissionToRole[ws.role],
+    });
+  }
 
-    return {
-      email: invitee.email,
-      workspace,
-    };
+  async sendOwnerTransferred(email: string, ws: { id: string }) {
+    const workspace = await this.getWorkspaceInfo(ws.id);
+    await this.mailer.sendOwnerTransferred(email, { name: workspace.name });
   }
 }

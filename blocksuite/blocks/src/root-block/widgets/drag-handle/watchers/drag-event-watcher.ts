@@ -9,7 +9,9 @@ import {
   TelemetryProvider,
 } from '@blocksuite/affine-shared/services';
 import {
+  calcDropTarget,
   captureEventTarget,
+  type DropResult,
   getBlockComponentsExcludeSubtrees,
   getClosestBlockComponentByPoint,
   matchFlavours,
@@ -25,14 +27,6 @@ import { GfxControllerIdentifier } from '@blocksuite/block-std/gfx';
 import { Bound, Point } from '@blocksuite/global/utils';
 import { Job, Slice, type SliceSnapshot } from '@blocksuite/store';
 
-import {
-  HtmlAdapter,
-  MarkdownAdapter,
-} from '../../../../_common/adapters/index.js';
-import {
-  calcDropTarget,
-  type DropResult,
-} from '../../../../_common/utils/index.js';
 import type { EdgelessRootBlockComponent } from '../../../edgeless/index.js';
 import { addNoteAtPoint } from '../../../edgeless/utils/common.js';
 import { DropIndicator } from '../components/drop-indicator.js';
@@ -493,28 +487,7 @@ export class DragEventWatcher {
         return slice;
       }
 
-      const html = dataTransfer.getData('text/html');
-      if (html) {
-        // use html parser;
-        const htmlAdapter = new HtmlAdapter(job);
-        const slice = await htmlAdapter.toSlice(
-          { file: html },
-          std.doc,
-          parent,
-          index
-        );
-        return slice;
-      }
-
-      const text = dataTransfer.getData('text/plain');
-      const textAdapter = new MarkdownAdapter(job);
-      const slice = await textAdapter.toSlice(
-        { file: text },
-        std.doc,
-        parent,
-        index
-      );
-      return slice;
+      return null;
     } catch {
       return null;
     }

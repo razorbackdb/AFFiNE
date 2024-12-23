@@ -53,6 +53,7 @@ export interface ModalProps extends DialogProps {
    * Whether to show the modal in full screen mode
    */
   fullScreen?: boolean;
+  disableAutoFocus?: boolean;
 }
 type PointerDownOutsideEvent = Parameters<
   Exclude<DialogContentProps['onPointerDownOutside'], undefined>
@@ -83,7 +84,7 @@ class ModalTransitionContainer extends HTMLElement {
       this.requestTransition();
       return child;
     } else {
-      // eslint-disable-next-line unicorn/prefer-dom-node-remove
+      // oxlint-disable-next-line unicorn/prefer-dom-node-remove
       return super.removeChild(child);
     }
   }
@@ -105,7 +106,7 @@ class ModalTransitionContainer extends HTMLElement {
       });
       startScopedViewTransition(styles.modalVTScope, () => {
         nodes.forEach(child => {
-          // eslint-disable-next-line unicorn/prefer-dom-node-remove
+          // oxlint-disable-next-line unicorn/prefer-dom-node-remove
           super.removeChild(child);
         });
       });
@@ -163,6 +164,7 @@ export const ModalInner = forwardRef<HTMLDivElement, ModalProps>(
       contentWrapperStyle,
       animation = BUILD_CONFIG.isMobileEdition ? 'slideBottom' : 'fadeScaleTop',
       fullScreen,
+      disableAutoFocus,
       ...otherProps
     } = props;
     const { className: closeButtonClassName, ...otherCloseButtonProps } =
@@ -208,6 +210,13 @@ export const ModalInner = forwardRef<HTMLDivElement, ModalProps>(
       [onEscapeKeyDown, persistent]
     );
 
+    const handleAutoFocus = useCallback(
+      (e: Event) => {
+        disableAutoFocus && e.preventDefault();
+      },
+      [disableAutoFocus]
+    );
+
     if (!container) {
       return;
     }
@@ -249,6 +258,7 @@ export const ModalInner = forwardRef<HTMLDivElement, ModalProps>(
                 onPointerDownOutside={handlePointerDownOutSide}
                 onEscapeKeyDown={handleEscapeKeyDown}
                 className={clsx(styles.modalContent, contentClassName)}
+                onOpenAutoFocus={handleAutoFocus}
                 style={{
                   ...assignInlineVars({
                     [styles.widthVar]: getVar(

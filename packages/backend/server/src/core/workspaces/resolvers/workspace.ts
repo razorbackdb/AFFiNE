@@ -17,7 +17,6 @@ import type { FileUpload } from '../../../base';
 import {
   AlreadyInSpace,
   Cache,
-  CantChangeSpaceOwner,
   DocNotFound,
   EventEmitter,
   InternalServerError,
@@ -383,18 +382,19 @@ export class WorkspaceResolver {
     @CurrentUser() user: CurrentUser,
     @Args('workspaceId') workspaceId: string,
     @Args('email') email: string,
-    @Args('permission', { type: () => Permission }) permission: Permission,
-    @Args('sendInviteMail', { nullable: true }) sendInviteMail: boolean
+    @Args('sendInviteMail', { nullable: true }) sendInviteMail: boolean,
+    @Args('permission', {
+      type: () => Permission,
+      nullable: true,
+      deprecationReason: 'never used',
+    })
+    _permission?: Permission
   ) {
     await this.permissions.checkWorkspace(
       workspaceId,
       user.id,
       Permission.Admin
     );
-
-    if (permission === Permission.Owner) {
-      throw new CantChangeSpaceOwner();
-    }
 
     try {
       // lock to prevent concurrent invite and grant
@@ -428,7 +428,7 @@ export class WorkspaceResolver {
       const inviteId = await this.permissions.grant(
         workspaceId,
         target.id,
-        permission
+        Permission.Write
       );
       if (sendInviteMail) {
         try {

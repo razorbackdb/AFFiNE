@@ -160,7 +160,6 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<
         if (this.model.type.startsWith('h') && collapsed) {
           const collapsedSiblings = this.collapsedSiblings;
           const textSelection = this.host.selection.find('text');
-          const blockSelections = this.host.selection.filter('block');
 
           if (
             textSelection &&
@@ -169,16 +168,6 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<
             )
           ) {
             this.host.selection.clear(['text']);
-          }
-
-          if (
-            blockSelections.some(selection =>
-              collapsedSiblings.some(
-                sibling => sibling.id === selection.blockId
-              )
-            )
-          ) {
-            this.host.selection.clear(['block']);
           }
         }
       })

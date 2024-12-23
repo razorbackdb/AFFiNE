@@ -5,10 +5,7 @@ import { RichTextExtensions } from '@blocksuite/affine-components/rich-text';
 import { EditPropsStore } from '@blocksuite/affine-shared/services';
 import type { ExtensionType } from '@blocksuite/block-std';
 
-import {
-  AdapterFactoryExtensions,
-  BlockAdapterMatcherExtensions,
-} from '../_common/adapters/extension.js';
+import { AdapterFactoryExtensions } from '../_common/adapters/extension.js';
 import { AttachmentBlockSpec } from '../attachment-block/attachment-spec.js';
 import { BookmarkBlockSpec } from '../bookmark-block/bookmark-spec.js';
 import { CodeBlockSpec } from '../code-block/code-block-spec.js';
@@ -35,7 +32,6 @@ export const CommonFirstPartyBlockSpecs: ExtensionType[] = [
   BookmarkBlockSpec,
   AttachmentBlockSpec,
   EmbedExtensions,
-  BlockAdapterMatcherExtensions,
   AdapterFactoryExtensions,
 ].flat();
 
@@ -53,6 +49,5 @@ export const EdgelessFirstPartyBlockSpecs: ExtensionType[] = [
   BookmarkBlockSpec,
   AttachmentBlockSpec,
   EmbedExtensions,
-  BlockAdapterMatcherExtensions,
   AdapterFactoryExtensions,
 ].flat();

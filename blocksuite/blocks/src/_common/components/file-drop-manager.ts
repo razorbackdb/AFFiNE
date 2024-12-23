@@ -1,5 +1,7 @@
 import type { DragIndicator } from '@blocksuite/affine-components/drag-indicator';
 import {
+  calcDropTarget,
+  type DropResult,
   getClosestBlockComponentByPoint,
   isInsidePageEditor,
   matchFlavours,
@@ -8,8 +10,6 @@ import type { BlockService, EditorHost } from '@blocksuite/block-std';
 import type { IVec } from '@blocksuite/global/utils';
 import { assertExists, Point } from '@blocksuite/global/utils';
 import type { BlockModel } from '@blocksuite/store';
-
-import { calcDropTarget, type DropResult } from '../../_common/utils/index.js';
 
 export type onDropProps = {
   files: File[];

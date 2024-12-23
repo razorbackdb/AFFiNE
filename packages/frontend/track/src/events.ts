@@ -48,6 +48,7 @@ type DocEvents =
   | 'copyBlockToLink'
   | 'bookmark'
   | 'editProperty'
+  | 'editPropertyMeta'
   | 'addProperty';
 type EditorEvents = 'bold' | 'italic' | 'underline' | 'strikeThrough';
 // END SECTION
@@ -168,12 +169,12 @@ const PageEvents = {
     },
     docInfoPanel: {
       $: ['open'],
-      property: ['editProperty', 'addProperty'],
+      property: ['editProperty', 'addProperty', 'editPropertyMeta'],
       databaseProperty: ['editProperty'],
     },
     settingsPanel: {
       menu: ['openSettings'],
-      workspace: ['viewPlans', 'export', 'addProperty'],
+      workspace: ['viewPlans', 'export', 'addProperty', 'editPropertyMeta'],
       profileAndBadge: ['viewPlans'],
       accountUsage: ['viewPlans'],
       accountSettings: ['uploadAvatar', 'removeAvatar', 'updateUserName'],
@@ -316,11 +317,11 @@ const PageEvents = {
     },
     inlineDocInfo: {
       $: ['toggle'],
-      property: ['editProperty', 'addProperty'],
+      property: ['editProperty', 'editPropertyMeta', 'addProperty'],
       databaseProperty: ['editProperty'],
     },
     sidepanel: {
-      property: ['addProperty'],
+      property: ['addProperty', 'editPropertyMeta'],
     },
     biDirectionalLinksPanel: {
       $: ['toggle'],
@@ -459,6 +460,7 @@ export type EventArgs = {
     type: string;
   };
   editProperty: { type: string };
+  editPropertyMeta: { type: string; field: string };
   addProperty: { type: string; control: 'at menu' | 'property list' };
   linkDoc: { type: string; journal: boolean };
   drop: { type: string };

@@ -23,6 +23,16 @@ const WorkspaceSettingPropertiesMain = () => {
     });
   }, []);
 
+  const onPropertyInfoChange = useCallback(
+    (property: DocCustomPropertyInfo, field: string) => {
+      track.$.settingsPanel.workspace.editPropertyMeta({
+        type: property.type,
+        field,
+      });
+    },
+    []
+  );
+
   return (
     <div className={styles.main}>
       <div className={styles.listHeader}>
@@ -32,7 +42,7 @@ const WorkspaceSettingPropertiesMain = () => {
           </Button>
         </Menu>
       </div>
-      <DocPropertyManager />
+      <DocPropertyManager onPropertyInfoChange={onPropertyInfoChange} />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { findNoteBlockModel } from '@blocksuite/affine-shared/utils';
 import type { BlockComponent } from '@blocksuite/block-std';
 
@@ -47,14 +46,9 @@ export class SelectionHelper {
       .filter((block): block is BlockComponent => !!block);
   }
 
-  get selectedBlockIds() {
-    return this.selectedBlocks.map(block => block.blockId);
-  }
-
   get selectedBlocks() {
     const selection = this.selection;
 
-    // eslint-disable-next-line
     return selection.find('text')
       ? selection.filter('text')
       : selection.filter('block');

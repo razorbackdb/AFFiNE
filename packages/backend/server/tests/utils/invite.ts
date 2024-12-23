@@ -3,14 +3,12 @@ import request from 'supertest';
 
 import type { InvitationType } from '../../src/core/workspaces';
 import { gql } from './common';
-import { PermissionEnum } from './utils';
 
 export async function inviteUser(
   app: INestApplication,
   token: string,
   workspaceId: string,
   email: string,
-  permission: PermissionEnum,
   sendInviteMail = false
 ): Promise<string> {
   const res = await request(app.getHttpServer())
@@ -20,7 +18,7 @@ export async function inviteUser(
     .send({
       query: `
             mutation {
-              invite(workspaceId: "${workspaceId}", email: "${email}", permission: ${permission}, sendInviteMail: ${sendInviteMail})
+              invite(workspaceId: "${workspaceId}", email: "${email}", sendInviteMail: ${sendInviteMail})
             }
           `,
     })

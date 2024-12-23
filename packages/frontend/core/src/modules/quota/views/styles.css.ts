@@ -25,3 +25,17 @@ export const bullet = style({
 export const modalChildren = style({
   paddingLeft: '0',
 });
+
+export const modalTitle = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  flexWrap: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+export const errorIcon = style({
+  color: cssVarV2('status/error'),
+  fontSize: '24px',
+});

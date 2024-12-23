@@ -278,6 +278,16 @@ export const BlocksuiteDocEditor = forwardRef<
     []
   );
 
+  const onPropertyInfoChange = useCallback(
+    (property: DocCustomPropertyInfo, field: string) => {
+      track.doc.inlineDocInfo.property.editPropertyMeta({
+        type: property.type,
+        field,
+      });
+    },
+    []
+  );
+
   return (
     <>
       <div className={styles.affineDocViewport}>
@@ -293,6 +303,7 @@ export const BlocksuiteDocEditor = forwardRef<
               onDatabasePropertyChange={onDatabasePropertyChange}
               onPropertyChange={onPropertyChange}
               onPropertyAdded={onPropertyAdded}
+              onPropertyInfoChange={onPropertyInfoChange}
               defaultOpenProperty={defaultOpenProperty}
             />
           </div>

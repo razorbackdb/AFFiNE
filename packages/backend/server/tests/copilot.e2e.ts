@@ -147,13 +147,7 @@ test('should create session correctly', async t => {
       );
     });
 
-    const inviteId = await inviteUser(
-      app,
-      token,
-      id,
-      'darksky@affine.pro',
-      'Admin'
-    );
+    const inviteId = await inviteUser(app, token, id, 'darksky@affine.pro');
     await acceptInviteById(app, id, inviteId, false);
     await assertCreateSession(
       id,
@@ -240,13 +234,7 @@ test('should fork session correctly', async t => {
       }
     );
 
-    const inviteId = await inviteUser(
-      app,
-      token,
-      id,
-      'test@affine.pro',
-      'Admin'
-    );
+    const inviteId = await inviteUser(app, token, id, 'test@affine.pro');
     await acceptInviteById(app, id, inviteId, false);
     await assertForkSession(
       newToken,
@@ -609,8 +597,7 @@ test('should reject request that user have not permission', async t => {
       app,
       anotherToken,
       workspaceId,
-      'darksky@affine.pro',
-      'Admin'
+      'darksky@affine.pro'
     );
     await acceptInviteById(app, workspaceId, inviteId, false);
 

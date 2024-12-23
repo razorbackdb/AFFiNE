@@ -89,6 +89,20 @@ export const InfoTable = ({
     []
   );
 
+  const onPropertyInfoChange = useCallback(
+    (
+      property: DocCustomPropertyInfo,
+      field: keyof DocCustomPropertyInfo,
+      _value: string
+    ) => {
+      track.$.docInfoPanel.property.editPropertyMeta({
+        type: property.type,
+        field,
+      });
+    },
+    []
+  );
+
   return (
     <>
       <PropertyCollapsibleSection
@@ -120,6 +134,9 @@ export const InfoTable = ({
               propertyInfo={property}
               defaultOpenEditMenu={newPropertyId === property.id}
               onChange={value => onPropertyChange(property, value)}
+              onPropertyInfoChange={(...args) =>
+                onPropertyInfoChange(property, ...args)
+              }
             />
           ))}
           <Menu

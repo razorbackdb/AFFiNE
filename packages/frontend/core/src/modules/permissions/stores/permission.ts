@@ -38,7 +38,6 @@ export class WorkspacePermissionStore extends Store {
   async inviteMember(
     workspaceId: string,
     email: string,
-    permission: Permission,
     sendInviteMail = false
   ) {
     if (!this.workspaceServerService.server) {
@@ -49,7 +48,6 @@ export class WorkspacePermissionStore extends Store {
       variables: {
         workspaceId,
         email,
-        permission,
         sendInviteMail,
       },
     });

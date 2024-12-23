@@ -166,7 +166,7 @@ function generateErrorArgs(name: string, args: ErrorArgs) {
 
 export function generateUserFriendlyErrors() {
   const output = [
-    '/* eslint-disable */',
+    '/* oxlint-disable */',
     '// AUTO GENERATED FILE',
     `import { createUnionType, Field, ObjectType, registerEnumType } from '@nestjs/graphql';`,
     '',
@@ -373,10 +373,6 @@ export const USER_FRIENDLY_ERRORS = {
     type: 'internal_server_error',
     args: { spaceId: 'string' },
     message: ({ spaceId }) => `Owner of Space ${spaceId} not found.`,
-  },
-  cant_change_space_owner: {
-    type: 'action_forbidden',
-    message: 'You are not allowed to change the owner of a Space.',
   },
   doc_not_found: {
     type: 'resource_not_found',

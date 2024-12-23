@@ -6,6 +6,7 @@ import {
 import { AIChatBlockSpec } from '@affine/core/blocksuite/presets/blocks/ai-chat-block';
 import type { ExtensionType } from '@blocksuite/affine/block-std';
 import {
+  AdapterFactoryExtensions,
   BookmarkBlockSpec,
   CodeBlockSpec,
   DatabaseBlockSpec,
@@ -48,6 +49,7 @@ const CommonBlockSpecs: ExtensionType[] = [
   EmbedLinkedDocBlockSpec,
   // special
   CustomAttachmentBlockSpec,
+  AdapterFactoryExtensions,
 ].flat();
 
 export const DefaultBlockSpecs: ExtensionType[] = [

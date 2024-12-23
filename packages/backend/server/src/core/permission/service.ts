@@ -322,10 +322,6 @@ export class PermissionService {
             this.prisma.workspaceUserPermission.update({
               where: {
                 workspaceId_userId: { workspaceId: ws, userId: user },
-                // only update permission:
-                // 1. if the new permission is owner and original permission is admin
-                // 2. if the original permission is not owner
-                type: toBeOwner ? Permission.Admin : { not: Permission.Owner },
               },
               data: { type: permission },
             }),

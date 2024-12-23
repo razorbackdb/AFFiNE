@@ -269,8 +269,6 @@ export class DataStruct {
         nodes.push(this.resultNode(record, options, match, nid));
       }
 
-      console.log(nodes);
-
       return {
         pagination: {
           count: match.size(),

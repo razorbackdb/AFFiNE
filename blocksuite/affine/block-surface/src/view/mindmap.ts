@@ -69,7 +69,10 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
           if (payload.props['xywh']) {
             updateButtons();
           }
-          if (payload.props['hidden'] !== undefined) {
+          if (
+            payload.props['hidden'] !== undefined ||
+            payload.props['opacity'] !== undefined
+          ) {
             this._updateButtonVisibility(payload.id);
           }
         }
@@ -169,6 +172,7 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
 
     if (!latestNode) {
       buttonModel.opacity = 0;
+      buttonModel.hidden = true;
       return;
     }
 
@@ -186,9 +190,9 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
 
     buttonModel.hidden = latestNode.element.hidden;
     buttonModel.opacity =
-      hasChildren && notHidden && (collapsed || isNodeSelected || hovered)
+      (hasChildren && notHidden && (collapsed || isNodeSelected || hovered)
         ? 1
-        : 0;
+        : 0) * (latestNode.element.opacity ?? 1);
   }
 
   private _updateCollapseButton(node: MindmapNode) {
@@ -216,7 +220,7 @@ export class MindMapView extends GfxElementModelView<MindmapElementModel> {
       const buttonStyle = collapsed ? style.expandButton : style.collapseButton;
 
       Object.entries(buttonStyle).forEach(([key, value]) => {
-        // @ts-expect-error FIXME: ts error
+        // @ts-expect-error key is string
         collapseButton[key as unknown] = value;
       });
 

@@ -1,6 +1,5 @@
 // Compat with SSR
 export * from '../types.js';
-export * from './drag-and-drop.js';
 export * from './query.js';
 export {
   createButtonPopper,

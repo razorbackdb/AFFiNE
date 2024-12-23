@@ -44,14 +44,7 @@ test('should send invite email', async t => {
 
     const stub = Sinon.stub(mail, 'sendMail');
 
-    await inviteUser(
-      app,
-      u1.token.token,
-      workspace.id,
-      u2.email,
-      'Admin',
-      true
-    );
+    await inviteUser(app, u1.token.token, workspace.id, u2.email, true);
 
     t.true(stub.calledOnce);
 

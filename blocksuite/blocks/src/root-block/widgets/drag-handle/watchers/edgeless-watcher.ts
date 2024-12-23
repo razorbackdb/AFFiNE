@@ -135,13 +135,6 @@ export class EdgelessWatcher {
       return;
     }
 
-    const flavour = selectedElement.flavour;
-    const dragHandleOptions = this.widget.optionRunner.getOption(flavour);
-    if (!dragHandleOptions || !dragHandleOptions.edgeless) {
-      this.widget.hide();
-      return;
-    }
-
     this.widget.anchorBlockId.value = selectedElement.id;
 
     this._showDragHandleOnTopLevelBlocks().catch(console.error);

@@ -10,6 +10,12 @@ export interface WorkspaceEvents {
       workspaceId: Workspace['id'];
     }>;
     requestApproved: Payload<{ inviteId: string }>;
+    roleChanged: Payload<{
+      userId: User['id'];
+      workspaceId: Workspace['id'];
+      permission: number;
+    }>;
+    ownerTransferred: Payload<{ email: string; workspaceId: Workspace['id'] }>;
     updated: Payload<{ workspaceId: Workspace['id']; count: number }>;
   };
   deleted: Payload<Workspace['id']>;

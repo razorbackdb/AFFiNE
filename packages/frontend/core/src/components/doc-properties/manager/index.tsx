@@ -27,9 +27,14 @@ import * as styles from './styles.css';
 const PropertyItem = ({
   propertyInfo,
   defaultOpenEditMenu,
+  onPropertyInfoChange,
 }: {
   propertyInfo: DocCustomPropertyInfo;
   defaultOpenEditMenu?: boolean;
+  onPropertyInfoChange?: (
+    field: keyof DocCustomPropertyInfo,
+    value: string
+  ) => void;
 }) => {
   const t = useI18n();
   const workspaceService = useService(WorkspaceService);
@@ -130,7 +135,12 @@ const PropertyItem = ({
             onOpenChange: setMoreMenuOpen,
             modal: true,
           }}
-          items={<EditDocPropertyMenuItems propertyId={propertyInfo.id} />}
+          items={
+            <EditDocPropertyMenuItems
+              propertyId={propertyInfo.id}
+              onPropertyInfoChange={onPropertyInfoChange}
+            />
+          }
         >
           <IconButton size={20} iconClassName={styles.itemMore}>
             <MoreHorizontalIcon />
@@ -145,8 +155,16 @@ const PropertyItem = ({
 export const DocPropertyManager = ({
   className,
   defaultOpenEditMenuPropertyId,
+  onPropertyInfoChange,
   ...props
-}: HTMLProps<HTMLDivElement> & { defaultOpenEditMenuPropertyId?: string }) => {
+}: HTMLProps<HTMLDivElement> & {
+  defaultOpenEditMenuPropertyId?: string;
+  onPropertyInfoChange?: (
+    property: DocCustomPropertyInfo,
+    field: keyof DocCustomPropertyInfo,
+    value: string
+  ) => void;
+}) => {
   const docsService = useService(DocsService);
 
   const properties = useLiveData(docsService.propertyList.sortedProperties$);
@@ -160,6 +178,9 @@ export const DocPropertyManager = ({
             defaultOpenEditMenuPropertyId === propertyInfo.id
           }
           key={propertyInfo.id}
+          onPropertyInfoChange={(...args) =>
+            onPropertyInfoChange?.(propertyInfo, ...args)
+          }
         />
       ))}
     </div>

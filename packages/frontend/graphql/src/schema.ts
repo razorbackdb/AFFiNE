@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -298,7 +298,6 @@ export enum ErrorNames {
   BLOB_QUOTA_EXCEEDED = 'BLOB_QUOTA_EXCEEDED',
   CANNOT_DELETE_ALL_ADMIN_ACCOUNT = 'CANNOT_DELETE_ALL_ADMIN_ACCOUNT',
   CANNOT_DELETE_OWN_ACCOUNT = 'CANNOT_DELETE_OWN_ACCOUNT',
-  CANT_CHANGE_SPACE_OWNER = 'CANT_CHANGE_SPACE_OWNER',
   CANT_UPDATE_ONETIME_PAYMENT_SUBSCRIPTION = 'CANT_UPDATE_ONETIME_PAYMENT_SUBSCRIPTION',
   CAPTCHA_VERIFICATION_FAILED = 'CAPTCHA_VERIFICATION_FAILED',
   COPILOT_ACTION_TAKEN = 'COPILOT_ACTION_TAKEN',
@@ -729,7 +728,7 @@ export interface MutationGrantMemberArgs {
 
 export interface MutationInviteArgs {
   email: Scalars['String']['input'];
-  permission: Permission;
+  permission?: InputMaybe<Permission>;
   sendInviteMail?: InputMaybe<Scalars['Boolean']['input']>;
   workspaceId: Scalars['String']['input'];
 }
@@ -2647,7 +2646,6 @@ export type RemoveWorkspaceFeatureMutation = {
 export type InviteByEmailMutationVariables = Exact<{
   workspaceId: Scalars['String']['input'];
   email: Scalars['String']['input'];
-  permission: Permission;
   sendInviteMail?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 

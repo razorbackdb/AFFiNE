@@ -8,7 +8,7 @@ import type { Collection, Filter } from '@affine/env/filter';
 import { Trans, useI18n } from '@affine/i18n';
 import type { DocMeta } from '@blocksuite/affine/store';
 import { useService } from '@toeverything/infra';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import { ListFloatingToolbar } from '../components/list-floating-toolbar';
 import { usePageItemGroupDefinitions } from '../group-definitions';
@@ -50,7 +50,7 @@ const usePageOperationsRenderer = () => {
   return pageOperationsRenderer;
 };
 
-export const VirtualizedPageList = ({
+export const VirtualizedPageList = memo(function VirtualizedPageList({
   tag,
   collection,
   filters,
@@ -62,7 +62,7 @@ export const VirtualizedPageList = ({
   filters?: Filter[];
   listItem?: DocMeta[];
   setHideHeaderCreateNewPage?: (hide: boolean) => void;
-}) => {
+}) {
   const t = useI18n();
   const listRef = useRef<ItemListHandle>(null);
   const [showFloatingToolbar, setShowFloatingToolbar] = useState(false);
@@ -202,4 +202,4 @@ export const VirtualizedPageList = ({
       />
     </>
   );
-};
+});

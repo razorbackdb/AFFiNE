@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type {
   SurfaceBlockComponent,
   SurfaceBlockModel,
@@ -127,6 +126,10 @@ export class EdgelessRootBlockComponent extends BlockComponent<
 
   get dispatcher() {
     return this.std.event;
+  }
+
+  get fontLoader() {
+    return this.std.get(FontLoaderService);
   }
 
   get gfx() {

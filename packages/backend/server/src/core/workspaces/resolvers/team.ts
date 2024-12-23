@@ -18,6 +18,7 @@ import {
   RequestMutex,
   TooManyRequest,
   URLHelper,
+  UserFriendlyError,
 } from '../../../base';
 import { CurrentUser } from '../../auth';
 import { Permission, PermissionService } from '../../permission';
@@ -311,7 +312,17 @@ export class TeamWorkspaceResolver {
         );
 
         if (result) {
-          // TODO(@darkskygit): send team role changed mail
+          this.event.emit('workspace.members.roleChanged', {
+            userId,
+            workspaceId,
+            permission,
+          });
+          if (permission === Permission.Owner) {
+            this.event.emit('workspace.members.ownerTransferred', {
+              email: user.email,
+              workspaceId,
+            });
+          }
         }
 
         return result;
@@ -320,6 +331,10 @@ export class TeamWorkspaceResolver {
       }
     } catch (e) {
       this.logger.error('failed to invite user', e);
+      // pass through user friendly error
+      if (e instanceof UserFriendlyError) {
+        return e;
+      }
       return new TooManyRequest();
     }
   }
@@ -352,5 +367,29 @@ export class TeamWorkspaceResolver {
   }: EventPayload<'workspace.members.requestApproved'>) {
     // send approve mail
     await this.workspaceService.sendReviewApproveEmail(inviteId);
+  }
+
+  @OnEvent('workspace.members.roleChanged')
+  async onRoleChanged({
+    userId,
+    workspaceId,
+    permission,
+  }: EventPayload<'workspace.members.roleChanged'>) {
+    // send role changed mail
+    await this.workspaceService.sendRoleChangedEmail(userId, {
+      id: workspaceId,
+      role: permission,
+    });
+  }
+
+  @OnEvent('workspace.members.ownerTransferred')
+  async onOwnerTransferred({
+    email,
+    workspaceId,
+  }: EventPayload<'workspace.members.ownerTransferred'>) {
+    // send role changed mail
+    await this.workspaceService.sendOwnerTransferred(email, {
+      id: workspaceId,
+    });
   }
 }

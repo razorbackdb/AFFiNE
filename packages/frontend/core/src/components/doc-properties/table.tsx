@@ -52,6 +52,11 @@ export interface DocPropertiesTableProps {
   defaultOpenProperty?: DefaultOpenProperty;
   onPropertyAdded?: (property: DocCustomPropertyInfo) => void;
   onPropertyChange?: (property: DocCustomPropertyInfo, value: unknown) => void;
+  onPropertyInfoChange?: (
+    property: DocCustomPropertyInfo,
+    field: keyof DocCustomPropertyInfo,
+    value: string
+  ) => void;
   onDatabasePropertyChange?: (
     row: DatabaseRow,
     cell: DatabaseValueCell,
@@ -106,12 +111,17 @@ interface DocPropertyRowProps {
   showAll?: boolean;
   defaultOpenEditMenu?: boolean;
   onChange?: (value: unknown) => void;
+  onPropertyInfoChange?: (
+    field: keyof DocCustomPropertyInfo,
+    value: string
+  ) => void;
 }
 
 export const DocPropertyRow = ({
   propertyInfo,
   defaultOpenEditMenu,
   onChange,
+  onPropertyInfoChange,
 }: DocPropertyRowProps) => {
   const t = useI18n();
   const docService = useService(DocService);
@@ -213,7 +223,12 @@ export const DocPropertyRow = ({
           propertyInfo.name ||
           (typeInfo?.name ? t.t(typeInfo.name) : t['unnamed']())
         }
-        menuItems={<EditDocPropertyMenuItems propertyId={propertyInfo.id} />}
+        menuItems={
+          <EditDocPropertyMenuItems
+            propertyId={propertyInfo.id}
+            onPropertyInfoChange={onPropertyInfoChange}
+          />
+        }
         data-testid="doc-property-name"
       />
       <ValueRenderer
@@ -231,6 +246,11 @@ interface DocWorkspacePropertiesTableBodyProps {
   defaultOpen?: boolean;
   onChange?: (property: DocCustomPropertyInfo, value: unknown) => void;
   onPropertyAdded?: (property: DocCustomPropertyInfo) => void;
+  onPropertyInfoChange?: (
+    property: DocCustomPropertyInfo,
+    field: keyof DocCustomPropertyInfo,
+    value: string
+  ) => void;
 }
 
 // 🏷️ Tags     (⋅ xxx) (⋅ yyy)
@@ -241,7 +261,15 @@ const DocWorkspacePropertiesTableBody = forwardRef<
   DocWorkspacePropertiesTableBodyProps
 >(
   (
-    { className, style, defaultOpen, onChange, onPropertyAdded, ...props },
+    {
+      className,
+      style,
+      defaultOpen,
+      onChange,
+      onPropertyAdded,
+      onPropertyInfoChange,
+      ...props
+    },
     ref
   ) => {
     const t = useI18n();
@@ -304,6 +332,9 @@ const DocWorkspacePropertiesTableBody = forwardRef<
               propertyInfo={property}
               defaultOpenEditMenu={newPropertyId === property.id}
               onChange={value => onChange?.(property, value)}
+              onPropertyInfoChange={(...args) =>
+                onPropertyInfoChange?.(property, ...args)
+              }
             />
           ))}
           <div className={styles.actionContainer}>
@@ -357,6 +388,7 @@ const DocPropertiesTableInner = ({
   defaultOpenProperty,
   onPropertyAdded,
   onPropertyChange,
+  onPropertyInfoChange,
   onDatabasePropertyChange,
   className,
 }: DocPropertiesTableProps) => {
@@ -376,6 +408,7 @@ const DocPropertiesTableInner = ({
             }
             onPropertyAdded={onPropertyAdded}
             onChange={onPropertyChange}
+            onPropertyInfoChange={onPropertyInfoChange}
           />
           <div className={styles.tableHeaderDivider} />
           <DocDatabaseBacklinkInfo

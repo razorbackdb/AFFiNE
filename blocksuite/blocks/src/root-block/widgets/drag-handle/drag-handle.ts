@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { RootBlockModel } from '@blocksuite/affine-model';
 import {
   DocModeProvider,
-  DragHandleConfigIdentifier,
   type DropType,
 } from '@blocksuite/affine-shared/services';
 import {
@@ -49,7 +47,6 @@ import { DragEventWatcher } from './watchers/drag-event-watcher.js';
 import { EdgelessWatcher } from './watchers/edgeless-watcher.js';
 import { HandleEventWatcher } from './watchers/handle-event-watcher.js';
 import { KeyboardEventWatcher } from './watchers/keyboard-event-watcher.js';
-import { LegacyDragEventWatcher } from './watchers/legacy-drag-event-watcher.js';
 import { PageWatcher } from './watchers/page-watcher.js';
 import { PointerEventWatcher } from './watchers/pointer-event-watcher.js';
 
@@ -142,8 +139,6 @@ export class AffineDragHandleWidget extends WidgetComponent<RootBlockModel> {
   private readonly _handleEventWatcher = new HandleEventWatcher(this);
 
   private readonly _keyboardEventWatcher = new KeyboardEventWatcher(this);
-
-  private readonly _legacyDragEventWatcher = new LegacyDragEventWatcher(this);
 
   private readonly _pageWatcher = new PageWatcher(this);
 
@@ -360,10 +355,6 @@ export class AffineDragHandleWidget extends WidgetComponent<RootBlockModel> {
     );
   };
 
-  private get _enableNewDnd() {
-    return this.std.doc.awarenessStore.getFlag('enable_new_dnd') ?? true;
-  }
-
   get dragHandleContainerOffsetParent() {
     return this.dragHandleContainer.parentElement!;
   }
@@ -385,17 +376,10 @@ export class AffineDragHandleWidget extends WidgetComponent<RootBlockModel> {
 
   override connectedCallback() {
     super.connectedCallback();
-    this.std.provider.getAll(DragHandleConfigIdentifier).forEach(config => {
-      this.optionRunner.register(config);
-    });
 
     this.pointerEventWatcher.watch();
     this._keyboardEventWatcher.watch();
-    if (this._enableNewDnd) {
-      this._dragEventWatcher.watch();
-    } else {
-      this._legacyDragEventWatcher.watch();
-    }
+    this._dragEventWatcher.watch();
   }
 
   override disconnectedCallback() {

@@ -1,25 +1,14 @@
-import {
-  getClosestBlockComponentByElement,
-  getRectByBlockComponent,
-  matchFlavours,
-} from '@blocksuite/affine-shared/utils';
 import type { BlockComponent } from '@blocksuite/block-std';
 import { type Point, Rect } from '@blocksuite/global/utils';
 import type { BlockModel } from '@blocksuite/store';
 
-import type { EditingState } from '../types.js';
-import { DropFlags, getDropRectByPoint } from './query.js';
-
-/**
- * A dropping type.
- */
-export type DroppingType = 'none' | 'before' | 'after' | 'database';
-
-export type DropResult = {
-  type: DroppingType;
-  rect: Rect;
-  modelState: EditingState;
-};
+import {
+  getClosestBlockComponentByElement,
+  getRectByBlockComponent,
+} from '../dom/index.js';
+import { matchFlavours } from '../model/index.js';
+import { getDropRectByPoint } from './get-drop-rect-by-point.js';
+import { DropFlags, type DroppingType, type DropResult } from './types.js';
 
 /**
  * Calculates the drop target.
@@ -32,7 +21,9 @@ export function calcDropTarget(
   scale: number = 1,
   flavour: string | null = null // for block-hub
 ): DropResult | null {
-  const schema = model.doc.getSchemaByFlavour('affine:database');
+  const schema = model.doc.getSchemaByFlavour(
+    'affine:database' as BlockSuite.Flavour
+  );
   const children = schema?.model.children ?? [];
 
   let shouldAppendToDatabase = true;
@@ -47,8 +38,12 @@ export function calcDropTarget(
     }
   }
 
-  if (!shouldAppendToDatabase && !matchFlavours(model, ['affine:database'])) {
-    const databaseBlockComponent = element.closest('affine-database');
+  if (
+    !shouldAppendToDatabase &&
+    !matchFlavours(model, ['affine:database' as BlockSuite.Flavour])
+  ) {
+    const databaseBlockComponent =
+      element.closest<BlockComponent>('affine-database');
     if (databaseBlockComponent) {
       element = databaseBlockComponent;
       model = databaseBlockComponent.model;
@@ -57,7 +52,9 @@ export function calcDropTarget(
 
   let type: DroppingType = 'none';
   const height = 3 * scale;
-  const { rect: domRect, flag } = getDropRectByPoint(point, model, element);
+  const dropResult = getDropRectByPoint(point, model, element);
+  if (!dropResult) return null;
+  const { rect: domRect, flag } = dropResult;
 
   if (flag === DropFlags.EmptyDatabase) {
     // empty database
