@@ -5,7 +5,13 @@ import {
   isInsidePageEditor,
   matchFlavours,
 } from '@blocksuite/affine-shared/utils';
-import type { BlockStdScope, EditorHost } from '@blocksuite/block-std';
+import {
+  type BlockStdScope,
+  type EditorHost,
+  type ExtensionType,
+  StdIdentifier,
+} from '@blocksuite/block-std';
+import { createIdentifier } from '@blocksuite/global/di';
 import type { IVec } from '@blocksuite/global/utils';
 import { Point } from '@blocksuite/global/utils';
 import type { BlockModel } from '@blocksuite/store';
@@ -27,14 +33,29 @@ export type FileDropOptions = {
 export class FileDropManager {
   private static _dropResult: DropResult | null = null;
 
+  private static _bound = false;
+
+  private static get _indicator() {
+    let indicator = document.querySelector<DragIndicator>(
+      'affine-drag-indicator'
+    );
+
+    if (!indicator) {
+      indicator = document.createElement(
+        'affine-drag-indicator'
+      ) as DragIndicator;
+      document.body.append(indicator);
+    }
+
+    return indicator;
+  }
+
   private readonly _std: BlockStdScope;
 
   private readonly _fileDropOptions: FileDropOptions;
 
-  private readonly _indicator!: DragIndicator;
-
   private readonly _onDrop = (event: DragEvent) => {
-    this._indicator.rect = null;
+    FileDropManager._indicator.rect = null;
 
     const { onDrop } = this._fileDropOptions;
     if (!onDrop) return;
@@ -63,7 +84,7 @@ export class FileDropManager {
 
   onDragLeave = () => {
     FileDropManager._dropResult = null;
-    this._indicator.rect = null;
+    FileDropManager._indicator.rect = null;
   };
 
   onDragOver = (event: DragEvent) => {
@@ -89,10 +110,10 @@ export class FileDropManager {
     }
     if (result) {
       FileDropManager._dropResult = result;
-      this._indicator.rect = result.rect;
+      FileDropManager._indicator.rect = result.rect;
     } else {
       FileDropManager._dropResult = null;
-      this._indicator.rect = null;
+      FileDropManager._indicator.rect = null;
     }
   };
 
@@ -148,24 +169,44 @@ export class FileDropManager {
     this._std = std;
     this._fileDropOptions = fileDropOptions;
 
-    let indicator = document.querySelector<DragIndicator>(
-      'affine-drag-indicator'
-    );
-
-    if (!indicator) {
-      indicator = document.createElement(
-        'affine-drag-indicator'
-      ) as DragIndicator;
-      document.body.append(indicator);
-    }
-
-    this._indicator = indicator;
-
     if (fileDropOptions.onDrop) {
-      this._std.event.add('nativeDrop', context => {
+      std.event.add('nativeDrop', context => {
         const event = context.get('dndState');
         this._onDrop(event.raw);
       });
     }
+
+    if (!FileDropManager._bound) {
+      FileDropManager._bound = true;
+      std.event.add('nativeDragOver', context => {
+        const event = context.get('dndState');
+        this.onDragOver(event.raw);
+      });
+      std.event.add('nativeDragLeave', () => {
+        this.onDragLeave();
+      });
+    }
+
+    std.event.disposables.add(() => {
+      FileDropManager._bound = false;
+    });
   }
 }
+
+const FileDropConfigExtensionIdentifier = createIdentifier<FileDropManager>(
+  'FileDropConfigExtension'
+);
+
+export const FileDropConfigExtension = (
+  options: FileDropOptions
+): ExtensionType => {
+  const identifier = FileDropConfigExtensionIdentifier(options.flavour);
+  return {
+    setup: di => {
+      di.addImpl(
+        identifier,
+        provider => new FileDropManager(provider.get(StdIdentifier), options)
+      );
+    },
+  };
+};

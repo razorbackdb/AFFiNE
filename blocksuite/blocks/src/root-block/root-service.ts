@@ -67,18 +67,6 @@ export abstract class RootService extends BlockService {
   override mounted() {
     super.mounted();
 
-    this.disposables.addFromEvent(
-      this.host,
-      'dragover',
-      this.fileDropManager.onDragOver
-    );
-
-    this.disposables.addFromEvent(
-      this.host,
-      'dragleave',
-      this.fileDropManager.onDragLeave
-    );
-
     this.disposables.add(
       this.std.event.add('pointerDown', ctx => {
         const state = ctx.get('pointerState');

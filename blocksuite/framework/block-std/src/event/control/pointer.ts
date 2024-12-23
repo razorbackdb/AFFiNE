@@ -272,6 +272,22 @@ class DragController extends PointerControllerBase {
     );
   };
 
+  private readonly _nativeDragOver = (event: DragEvent) => {
+    const dndEventState = new DndEventState({ event });
+    this._dispatcher.run(
+      'nativeDragOver',
+      this._createContext(event, dndEventState)
+    );
+  };
+
+  private readonly _nativeDragLeave = (event: DragEvent) => {
+    const dndEventState = new DndEventState({ event });
+    this._dispatcher.run(
+      'nativeDragLeave',
+      this._createContext(event, dndEventState)
+    );
+  };
+
   private readonly _nativeDrop = (event: DragEvent) => {
     this._reset();
     this._nativeDragging = false;
@@ -354,6 +370,8 @@ class DragController extends PointerControllerBase {
     disposables.addFromEvent(host, 'dragend', this._nativeDragEnd);
     disposables.addFromEvent(host, 'drag', this._nativeDragMove);
     disposables.addFromEvent(host, 'drop', this._nativeDrop);
+    disposables.addFromEvent(host, 'dragover', this._nativeDragOver);
+    disposables.addFromEvent(host, 'dragleave', this._nativeDragLeave);
   }
 }
 

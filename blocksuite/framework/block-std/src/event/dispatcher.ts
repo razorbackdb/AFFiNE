@@ -58,6 +58,8 @@ const eventNames = [
   'nativeDragMove',
   'nativeDragEnd',
   'nativeDrop',
+  'nativeDragOver',
+  'nativeDragLeave',
 
   ...bypassEventNames,
 ] as const;
