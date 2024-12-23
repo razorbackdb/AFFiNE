@@ -9,6 +9,7 @@ import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
 import {
   createDefaultDoc,
   openFileOrFiles,
+  type Signal,
 } from '@blocksuite/affine-shared/utils';
 import type { BlockStdScope } from '@blocksuite/block-std';
 import { viewPresets } from '@blocksuite/data-view/view-presets';
@@ -54,6 +55,7 @@ import {
   YesterdayIcon,
   YoutubeDuotoneIcon,
 } from '@blocksuite/icons/lit';
+import { computed } from '@preact/signals-core';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import type { TemplateResult } from 'lit';
 
@@ -113,6 +115,10 @@ export type KeyboardToolbarActionItem = {
 export type KeyboardSubToolbarConfig = {
   icon: KeyboardIconType;
   items: KeyboardToolbarItem[];
+  /**
+   * It will enter this sub-toolbar when the condition is met.
+   */
+  autoShow?: (ctx: KeyboardToolbarContext) => Signal<boolean>;
 };
 
 export type KeyboardToolbarContext = {
@@ -868,6 +874,13 @@ const textSubToolbarConfig: KeyboardSubToolbarConfig = {
     },
     highlightToolPanel,
   ],
+  autoShow: ({ std }) => {
+    return computed(() => {
+      const selection =
+        std.command.exec('getTextSelection').currentTextSelection;
+      return selection ? !selection.isCollapsed() : false;
+    });
+  },
 };
 
 export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {

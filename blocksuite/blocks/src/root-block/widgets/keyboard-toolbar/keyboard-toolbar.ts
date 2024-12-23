@@ -9,7 +9,7 @@ import {
 } from '@blocksuite/block-std';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/utils';
 import { ArrowLeftBigIcon, KeyboardIcon } from '@blocksuite/icons/lit';
-import { effect, signal } from '@preact/signals-core';
+import { effect, type Signal, signal } from '@preact/signals-core';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -280,6 +280,48 @@ export class AffineKeyboardToolbar extends SignalWatcher(
         // wait cursor updated
         requestAnimationFrame(() => {
           this.scrollCurrentBlockIntoView();
+        });
+      })
+    );
+
+    this._watchAutoShow();
+  }
+
+  private _watchAutoShow() {
+    const autoShowSubToolbars: { path: number[]; signal: Signal<boolean> }[] =
+      [];
+
+    const traverse = (item: KeyboardToolbarItem, path: number[]) => {
+      if (isKeyboardSubToolBarConfig(item) && item.autoShow) {
+        autoShowSubToolbars.push({
+          path,
+          signal: item.autoShow(this._context),
+        });
+
+        item.items.forEach((subItem, index) => {
+          traverse(subItem, [...path, index]);
+        });
+      }
+    };
+    this.config.items.forEach((item, index) => {
+      traverse(item, [index]);
+    });
+
+    const samePath = (a: number[], b: number[]) =>
+      a.length === b.length && a.every((v, i) => v === b[i]);
+
+    let prevPath = this._path$.peek();
+    this.disposables.add(
+      effect(() => {
+        autoShowSubToolbars.forEach(({ path, signal }) => {
+          if (signal.value) {
+            if (samePath(this._path$.peek(), path)) return;
+
+            prevPath = this._path$.peek();
+            this._path$.value = path;
+          } else {
+            this._path$.value = prevPath;
+          }
         });
       })
     );
