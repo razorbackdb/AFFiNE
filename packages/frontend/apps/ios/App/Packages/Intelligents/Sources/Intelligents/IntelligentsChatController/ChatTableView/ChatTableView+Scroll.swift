@@ -51,21 +51,41 @@ extension ChatTableView: UIScrollViewDelegate, DisplayLinkDelegate {
     assert(Thread.isMainThread)
     guard scrollToBottomEnabled != oldValue else { return }
     resetAnimationContext(to: tableView.contentOffset.y)
-    presentScrollBottomIfNeeded()
   }
 
   func animationAllowedToggleDidSet(oldValue: Bool) {
     assert(Thread.isMainThread)
     guard scrollToBottomAllowed != oldValue else { return }
     resetAnimationContext(to: tableView.contentOffset.y)
-    presentScrollBottomIfNeeded()
   }
 
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    processScrollView(scrollView)
+  }
+
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate _: Bool) {
+    processScrollView(scrollView)
+  }
+
+  func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    processScrollView(scrollView)
+  }
+
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    processScrollView(scrollView)
+  }
+
+  @inline(__always)
+  private func processScrollView(_ scrollView: UIScrollView) {
     guard let tableView = scrollView as? UITableView else {
       assertionFailure()
       return
     }
+    processTableViewMovements(tableView)
+  }
+
+  private func processTableViewMovements(_ tableView: UITableView) {
+    defer { presentScrollBottomIfNeeded() }
     if tableView.isDragging {
       scrollToBottomEnabled = false
       scrollToBottomAllowed = false
