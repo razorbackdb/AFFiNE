@@ -39,7 +39,7 @@ export class DocsService extends Service {
   propertyValues$(propertyKey: string) {
     return combineLatest([
       this.store.watchDocIds(),
-      this.docPropertiesStore.watchPropertyAllValues(propertyKey),
+      this.docPropertiesStore.watchPropertyAllValues$(propertyKey),
     ]).pipe(
       map(([docIds, propertyValues]) => {
         const result = new Map<string, string | undefined>();

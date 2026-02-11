@@ -15,6 +15,7 @@ import { HighlightSelectionExtension } from '@blocksuite/affine-shared/selection
 import {
   BlockMetaService,
   FeatureFlagService,
+  MetadataService,
 } from '@blocksuite/affine-shared/services';
 import {
   BlockSelectionExtension,
@@ -49,6 +50,7 @@ export class FoundationStoreExtension extends StoreExtensionProvider {
       BlockMetaService,
       // TODO(@mirone): maybe merge these services into a file setting service
       ImageProxyService,
+      MetadataService,
     ]);
   }
 }

@@ -63,7 +63,8 @@ export const EdgelessSnapshot = (props: Props) => {
       .theme(framework)
       .database(framework)
       .linkedDoc(framework)
-      .codeBlockPreview(framework).value;
+      .codeBlockPreview(framework)
+      .metadataDoc(framework).value;
     return manager
       .get('preview-edgeless')
       .concat([ViewportElementExtension('.setting-editor-snapshot')]);

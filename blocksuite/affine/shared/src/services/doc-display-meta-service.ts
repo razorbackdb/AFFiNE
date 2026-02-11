@@ -25,11 +25,28 @@ import type { TemplateResult } from 'lit';
 
 import { referenceToNode } from '../utils/reference.js';
 import { DocModeProvider } from './doc-mode-service.js';
+import { METADATA_CONFIG } from './metadata-config.js';
 
 export type DocDisplayMetaParams = {
   referenced?: boolean;
   params?: ReferenceParams;
 } & AliasInfo;
+
+/**
+ * Interface for the Document Properties service from the main application
+ */
+export type DocPropertyRecord = Record<string, unknown>;
+
+export interface DocPropertiesProvider {
+  getDocProperties: (id: string) => DocPropertyRecord;
+  watchDocProperties$: (id: string) => ReadonlySignal<DocPropertyRecord>;
+  watchPropertyAllValues$: (
+    propertyKey: string
+  ) => ReadonlySignal<Map<string, string | undefined>>;
+}
+
+export const DocPropertiesProviderIdentifier =
+  createIdentifier<DocPropertiesProvider>('DocPropertiesProvider');
 
 /**
  * Customize document display title and icon.
@@ -95,6 +112,14 @@ export class DocDisplayMetaService
     }
   }
 
+  private _getMetadataIconFromProps(
+    props: DocPropertyRecord | undefined
+  ): TemplateResult | null {
+    if (props?.docType !== 'metadata-doc' || !props.mediaType) return null;
+    const mediaType = String(props.mediaType);
+    return METADATA_CONFIG[mediaType]?.icon ?? null;
+  }
+
   icon(
     pageId: string,
     { params, title, referenced }: DocDisplayMetaParams = {}
@@ -106,23 +131,32 @@ export class DocDisplayMetaService
     }
 
     const store = doc.getStore();
+    const provider = this.std.getOptional(DocPropertiesProviderIdentifier);
+    const props$ = provider?.watchDocProperties$(pageId);
 
     let icon$ = this.iconMap.get(store);
 
     if (!icon$) {
-      icon$ = signal(
-        this.std.get(DocModeProvider).getPrimaryMode(pageId) === 'edgeless'
-          ? DocDisplayMetaService.icons.edgeless
-          : DocDisplayMetaService.icons.page
+      const currentMode$ = signal(
+        this.std.get(DocModeProvider).getPrimaryMode(pageId)
       );
+
+      icon$ = computed(() => {
+        const props = props$?.value;
+        const metadataIcon = this._getMetadataIconFromProps(props);
+        if (metadataIcon) {
+          return metadataIcon;
+        }
+
+        return currentMode$.value === 'edgeless'
+          ? DocDisplayMetaService.icons.edgeless
+          : DocDisplayMetaService.icons.page;
+      }) as unknown as Signal<TemplateResult>;
 
       const disposable = this.std
         .get(DocModeProvider)
         .onPrimaryModeChange(mode => {
-          icon$!.value =
-            mode === 'edgeless'
-              ? DocDisplayMetaService.icons.edgeless
-              : DocDisplayMetaService.icons.page;
+          currentMode$.value = mode;
         }, pageId);
 
       this.disposables.push(disposable);
@@ -136,6 +170,12 @@ export class DocDisplayMetaService
 
       if (referenceToNode({ pageId, params })) {
         return DocDisplayMetaService.icons.linkedBlock;
+      }
+
+      const props = props$?.value;
+      const metadataIcon = this._getMetadataIconFromProps(props);
+      if (metadataIcon) {
+        return metadataIcon;
       }
 
       if (referenced) {

@@ -91,7 +91,7 @@ const usePatchSpecs = (mode: DocMode, shared?: boolean) => {
     isCloud && serverConfig.features.includes(ServerFeature.Comment) && !shared;
 
   const patchedSpecs = useMemo(() => {
-    const manager = getViewManager()
+    let config = getViewManager()
       .config.init()
       .foundation(framework)
       .ai(enableAI, framework)
@@ -118,16 +118,20 @@ const usePatchSpecs = (mode: DocMode, shared?: boolean) => {
       .linkPreview(framework)
       .codeBlockPreview(framework)
       .iconPicker(framework)
-      .comment(enableComment, framework).value;
+      .comment(enableComment, framework);
+
+    if (framework) {
+      config = config.metadataDoc(framework);
+    }
 
     if (BUILD_CONFIG.isMobileEdition) {
       if (mode === 'page') {
-        return manager.get('mobile-page');
+        return config.value.get('mobile-page');
       } else {
-        return manager.get('mobile-edgeless');
+        return config.value.get('mobile-edgeless');
       }
     } else {
-      return manager.get(mode);
+      return config.value.get(mode);
     }
   }, [
     confirmModal,

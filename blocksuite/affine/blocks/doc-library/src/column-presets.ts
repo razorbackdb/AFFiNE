@@ -1,0 +1,161 @@
+export const DEFAULT_COLUMNS = {
+  movie: [
+    {
+      id: 'title',
+      name: 'Title',
+      type: 'doc-metadata',
+      data: { metadataKey: 'title' },
+    },
+    {
+      id: 'releaseDate',
+      name: 'Release Date',
+      type: 'doc-metadata',
+      data: { metadataKey: 'releaseDate' },
+    },
+    {
+      id: 'rating',
+      name: 'Rating',
+      type: 'doc-metadata',
+      data: { metadataKey: 'rating' },
+    },
+    {
+      id: 'genres',
+      name: 'Genres',
+      type: 'doc-metadata',
+      data: { metadataKey: 'genres' },
+    },
+    { id: 'link', name: 'Link', type: 'custom-link', data: {} },
+  ],
+  tv: [
+    {
+      id: 'title',
+      name: 'Title',
+      type: 'doc-metadata',
+      data: { metadataKey: 'title' },
+    },
+    {
+      id: 'releaseDate',
+      name: 'First Air Date',
+      type: 'doc-metadata',
+      data: { metadataKey: 'releaseDate' },
+    },
+    {
+      id: 'rating',
+      name: 'Rating',
+      type: 'doc-metadata',
+      data: { metadataKey: 'rating' },
+    },
+    {
+      id: 'genres',
+      name: 'Genres',
+      type: 'doc-metadata',
+      data: { metadataKey: 'genres' },
+    },
+    { id: 'link', name: 'Link', type: 'custom-link', data: {} },
+  ],
+  book: [
+    {
+      id: 'title',
+      name: 'Title',
+      type: 'doc-metadata',
+      data: { metadataKey: 'title' },
+    },
+    {
+      id: 'authors',
+      name: 'Author(s)',
+      type: 'doc-metadata',
+      data: { metadataKey: 'authors' },
+    },
+    {
+      id: 'publisher',
+      name: 'Publisher',
+      type: 'doc-metadata',
+      data: { metadataKey: 'publisher' },
+    },
+    {
+      id: 'publishDate',
+      name: 'Publish Date',
+      type: 'doc-metadata',
+      data: { metadataKey: 'publishDate' },
+    },
+    {
+      id: 'pageCount',
+      name: 'Pages',
+      type: 'doc-metadata',
+      data: { metadataKey: 'pageCount' },
+    },
+    {
+      id: 'isbn',
+      name: 'ISBN',
+      type: 'doc-metadata',
+      data: { metadataKey: 'isbn' },
+    },
+    { id: 'link', name: 'Link', type: 'custom-link', data: {} },
+  ],
+  game: [
+    {
+      id: 'title',
+      name: 'Title',
+      type: 'doc-metadata',
+      data: { metadataKey: 'title' },
+    },
+    {
+      id: 'releaseDate',
+      name: 'Release Date',
+      type: 'doc-metadata',
+      data: { metadataKey: 'releaseDate' },
+    },
+    {
+      id: 'rating',
+      name: 'Rating',
+      type: 'doc-metadata',
+      data: { metadataKey: 'rating' },
+    },
+    {
+      id: 'developers',
+      name: 'Developer(s)',
+      type: 'doc-metadata',
+      data: { metadataKey: 'developers' },
+    },
+    {
+      id: 'platforms',
+      name: 'Platforms',
+      type: 'doc-metadata',
+      data: { metadataKey: 'platforms' },
+    },
+    { id: 'link', name: 'Link', type: 'custom-link', data: {} },
+  ],
+  music: [
+    {
+      id: 'title',
+      name: 'Title',
+      type: 'doc-metadata',
+      data: { metadataKey: 'title' },
+    },
+    {
+      id: 'artist',
+      name: 'Artist',
+      type: 'doc-metadata',
+      data: { metadataKey: 'artist' },
+    },
+    {
+      id: 'album',
+      name: 'Album',
+      type: 'doc-metadata',
+      data: { metadataKey: 'album' },
+    },
+    {
+      id: 'releaseDate',
+      name: 'Release Date',
+      type: 'doc-metadata',
+      data: { metadataKey: 'releaseDate' },
+    },
+    {
+      id: 'genre',
+      name: 'Genre',
+      type: 'doc-metadata',
+      data: { metadataKey: 'genre' },
+    },
+    { id: 'link', name: 'Link', type: 'custom-link', data: {} },
+  ],
+};

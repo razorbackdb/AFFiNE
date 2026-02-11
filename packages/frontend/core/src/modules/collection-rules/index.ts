@@ -12,11 +12,13 @@ import { CreatedAtFilterProvider } from './impls/filters/created-at';
 import { CreatedByFilterProvider } from './impls/filters/created-by';
 import { DatePropertyFilterProvider } from './impls/filters/date';
 import { DocPrimaryModeFilterProvider } from './impls/filters/doc-primary-mode';
+import { DocTypeFilterProvider } from './impls/filters/doc-type';
 import { EdgelessThemeFilterProvider } from './impls/filters/edgeless-theme';
 import { EmptyJournalFilterProvider } from './impls/filters/empty-journal';
 import { FavoriteFilterProvider } from './impls/filters/favorite';
 import { IntegrationTypeFilterProvider } from './impls/filters/integration-type';
 import { JournalFilterProvider } from './impls/filters/journal';
+import { MediaTypeFilterProvider } from './impls/filters/media-type';
 import { NumberPropertyFilterProvider } from './impls/filters/number';
 import { PageWidthFilterProvider } from './impls/filters/page-width';
 import { PropertyFilterProvider } from './impls/filters/property';
@@ -37,6 +39,7 @@ import { DocPrimaryModeGroupByProvider } from './impls/group-by/doc-primary-mode
 import { EdgelessThemeGroupByProvider } from './impls/group-by/edgeless-theme';
 import { IntegrationTypeGroupByProvider } from './impls/group-by/integration-type';
 import { JournalGroupByProvider } from './impls/group-by/journal';
+import { MediaTypeGroupByProvider } from './impls/group-by/media-type';
 import { NumberPropertyGroupByProvider } from './impls/group-by/number';
 import { PageWidthGroupByProvider } from './impls/group-by/page-width';
 import { PropertyGroupByProvider } from './impls/group-by/property';
@@ -54,6 +57,7 @@ import { DocPrimaryModeOrderByProvider } from './impls/order-by/doc-primary-mode
 import { EdgelessThemeOrderByProvider } from './impls/order-by/edgeless-theme';
 import { IntegrationTypeOrderByProvider } from './impls/order-by/integration-type';
 import { JournalOrderByProvider } from './impls/order-by/journal';
+import { MediaTypeOrderByProvider } from './impls/order-by/media-type';
 import { NumberPropertyOrderByProvider } from './impls/order-by/number';
 import { PageWidthOrderByProvider } from './impls/order-by/page-width';
 import { PropertyOrderByProvider } from './impls/order-by/property';
@@ -159,6 +163,12 @@ export function configureCollectionRulesModule(framework: Framework) {
       IntegrationTypeFilterProvider,
       [DocsService]
     )
+    .impl(FilterProvider('system:docType'), DocTypeFilterProvider, [
+      DocsService,
+    ])
+    .impl(FilterProvider('system:mediaType'), MediaTypeFilterProvider, [
+      DocsService,
+    ])
     .impl(
       FilterProvider('property:edgelessTheme'),
       EdgelessThemeFilterProvider,
@@ -216,6 +226,9 @@ export function configureCollectionRulesModule(framework: Framework) {
       DocPrimaryModeGroupByProvider,
       [DocsService]
     )
+    .impl(GroupByProvider('system:mediaType'), MediaTypeGroupByProvider, [
+      DocsService,
+    ])
     .impl(GroupByProvider('property:createdAt'), CreatedAtGroupByProvider, [
       DocsService,
     ])
@@ -288,6 +301,9 @@ export function configureCollectionRulesModule(framework: Framework) {
       DocPrimaryModeOrderByProvider,
       [DocsService]
     )
+    .impl(OrderByProvider('system:mediaType'), MediaTypeOrderByProvider, [
+      DocsService,
+    ])
     .impl(OrderByProvider('property:updatedAt'), UpdatedAtOrderByProvider, [
       DocsService,
     ])

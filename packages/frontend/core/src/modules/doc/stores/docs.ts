@@ -259,7 +259,7 @@ export class DocsStore extends Store {
   }
 
   watchDocPrimaryModeSetting(id: string) {
-    return this.docPropertiesStore.watchDocProperties(id).pipe(
+    return this.docPropertiesStore.watchDocProperties$(id).pipe(
       map(config => config?.primaryMode),
       distinctUntilChanged((p, c) => p === c)
     );

@@ -4,6 +4,7 @@ import {
 } from '@blocksuite/affine-ext-loader';
 import {
   EmbedLinkedDocBlockSchemaExtension,
+  EmbedMetadataCardBlockSchemaExtension,
   EmbedSyncedDocBlockSchemaExtension,
 } from '@blocksuite/affine-model';
 
@@ -18,6 +19,7 @@ export class EmbedDocStoreExtension extends StoreExtensionProvider {
     context.register([
       EmbedSyncedDocBlockSchemaExtension,
       EmbedLinkedDocBlockSchemaExtension,
+      EmbedMetadataCardBlockSchemaExtension,
     ]);
     context.register(EmbedLinkedDocBlockAdapterExtensions);
     context.register(EmbedSyncedDocBlockAdapterExtensions);

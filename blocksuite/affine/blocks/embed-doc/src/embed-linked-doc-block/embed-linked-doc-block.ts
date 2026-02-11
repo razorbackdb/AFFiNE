@@ -20,6 +20,8 @@ import {
   CitationProvider,
   DocDisplayMetaProvider,
   DocModeProvider,
+  DocPropertiesProviderIdentifier,
+  METADATA_CONFIG,
   OpenDocExtensionIdentifier,
   type OpenDocMode,
   ThemeProvider,
@@ -33,11 +35,11 @@ import {
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
-import { ResetIcon } from '@blocksuite/icons/lit';
+import { ResetIcon, StarIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import { Text } from '@blocksuite/store';
 import { computed } from '@preact/signals-core';
-import { html, nothing } from 'lit';
+import { html, nothing, type PropertyValues } from 'lit';
 import { property, queryAsync, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -196,8 +198,8 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
     return cloneReferenceInfo({
       pageId,
       params,
-      title: title$.value,
-      description: description$.value,
+      title: title$?.value,
+      description: description$?.value,
     });
   });
 
@@ -262,6 +264,85 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
 
   get isCitation() {
     return this.citationService.isCitationModel(this.model);
+  }
+
+  private async _resolveBlobUrl(imageRef: string): Promise<string | null> {
+    // If it already looks like a URL, use it directly
+    if (
+      imageRef.startsWith('http://') ||
+      imageRef.startsWith('https://') ||
+      imageRef.startsWith('data:') ||
+      imageRef.startsWith('blob:')
+    ) {
+      return imageRef;
+    }
+    // Otherwise, treat it as a blob sourceId and resolve from the linked doc's store
+    try {
+      const storage = this.linkedDoc?.blobSync;
+      if (!storage) return null;
+      const blob = await storage.get(imageRef);
+      if (!blob) return null;
+
+      return URL.createObjectURL(blob);
+    } catch {
+      return null;
+    }
+  }
+
+  override willUpdate(changedProperties: PropertyValues) {
+    super.willUpdate(changedProperties);
+
+    // Metadata Doc Specialized Rendering
+    type MetadataProps = {
+      docType?: string;
+      mediaType?: string;
+      rating?: number;
+      releaseDate?: string;
+      artist?: string;
+      album?: string;
+      authors?: string | string[];
+      developers?: string | string[];
+      genres?: string | string[];
+      pageCount?: number;
+      image?: string;
+    };
+    let props: MetadataProps | null = null;
+    const linkedDoc = this.linkedDoc;
+    if (linkedDoc) {
+      const provider = this.std.getOptional(DocPropertiesProviderIdentifier);
+      if (provider) {
+        props = provider.getDocProperties(linkedDoc.id) as MetadataProps;
+      }
+    }
+
+    if (props?.image !== this._currentImageRef) {
+      const imageToResolve = props?.image;
+      this._currentImageRef = imageToResolve ?? null;
+
+      if (!imageToResolve) {
+        if (this._resolvedMetadataImage?.startsWith('blob:')) {
+          URL.revokeObjectURL(this._resolvedMetadataImage);
+        }
+        this._resolvedMetadataImage = null;
+      } else {
+        this._resolveBlobUrl(imageToResolve)
+          .then(url => {
+            if (this._currentImageRef !== imageToResolve) {
+              // If the image ref has changed since we started resolving, revoke the new URL
+              if (url?.startsWith('blob:')) {
+                URL.revokeObjectURL(url);
+              }
+              return;
+            }
+
+            if (this._resolvedMetadataImage?.startsWith('blob:')) {
+              URL.revokeObjectURL(this._resolvedMetadataImage);
+            }
+            this._resolvedMetadataImage = url;
+          })
+          .catch(console.error);
+      }
+    }
   }
 
   private readonly _handleDoubleClick = (event: MouseEvent) => {
@@ -330,7 +411,7 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
     const isEmpty = this._isDocEmpty() && this.isBannerEmpty;
     const inCanvas = matchModels(this.model.parent, [SurfaceBlockModel]);
 
-    const cardClassMap = classMap({
+    const cardClasses = {
       loading: isLoading,
       error: isError,
       deleted: isDeleted,
@@ -340,7 +421,8 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
       'in-canvas': inCanvas,
       [this._cardStyle]: true,
       'comment-highlighted': this.isCommentHighlighted,
-    });
+    };
+    const cardClassMap = classMap(cardClasses);
 
     const theme = this.std.get(ThemeProvider).theme;
     const {
@@ -356,6 +438,8 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
         : this.icon$.value;
     const title = isLoading ? 'Loading...' : this.title$;
     const description = this.model.props.description$;
+
+    const hasDescriptionAlias = Boolean(description?.value);
 
     const showDefaultNoteContent = isError || isLoading || isDeleted || isEmpty;
     const defaultNoteContent = isError
@@ -383,7 +467,41 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
           ? LinkedDocDeletedBanner
           : LinkedDocEmptyBanner;
 
-    const hasDescriptionAlias = Boolean(description.value);
+    // Metadata Doc Specialized Rendering
+    type MetadataProps = {
+      docType?: string;
+      mediaType?: string;
+      rating?: number;
+      releaseDate?: string;
+      artist?: string;
+      album?: string;
+      authors?: string | string[];
+      developers?: string | string[];
+      genres?: string | string[];
+      pageCount?: number;
+      image?: string;
+    };
+    let props: MetadataProps | null = null;
+    if (linkedDoc) {
+      const provider = this.std.getOptional(DocPropertiesProviderIdentifier);
+      if (provider) {
+        props = provider.watchDocProperties$(linkedDoc.id)
+          .value as MetadataProps;
+      }
+    }
+
+    const isMetadataBlock = this.model.flavour === 'affine:embed-metadata-card';
+    if (
+      (isMetadataBlock || props?.docType === 'metadata-doc') &&
+      !isError &&
+      !isLoading &&
+      !isDeleted &&
+      props
+    ) {
+      return this.renderEmbed(() =>
+        this._renderMetadataView(props, cardClasses)
+      );
+    }
 
     return this.renderEmbed(
       () => html`
@@ -408,7 +526,7 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
               () =>
                 html`<div class="affine-embed-linked-doc-content-note alias">
                   ${repeat(
-                    (description.value ?? '').split('\n'),
+                    (description?.value || '').split('\n'),
                     text => html`<p>${text}</p>`
                   )}
                 </div>`,
@@ -457,6 +575,118 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
         </div>
       `
     );
+  };
+
+  private readonly _renderMetadataView = (
+    props: {
+      mediaType?: string;
+      rating?: number;
+      releaseDate?: string;
+      artist?: string;
+      album?: string;
+      authors?: string | string[];
+      developers?: string | string[];
+      genres?: string | string[];
+      pageCount?: number;
+      image?: string;
+    },
+    cardClassMap: Record<string, boolean>
+  ) => {
+    const title = this.title$;
+    const icon = this.icon$.value;
+    const mediaType = props.mediaType;
+    const config = mediaType ? METADATA_CONFIG[mediaType] : null;
+
+    // Extract metadata
+    const rating = props.rating;
+
+    // Media specific info
+    let secondaryInfo = null;
+    if (config?.secondaryField) {
+      const key = config.secondaryField.key as keyof typeof props;
+      const rawValue = props[key];
+      const value = config.secondaryField.formatter
+        ? config.secondaryField.formatter(rawValue, props)
+        : rawValue;
+
+      if (value) {
+        secondaryInfo = { label: config.secondaryField.label, value };
+      }
+    }
+
+    return html`
+      <div
+        class="affine-embed-linked-doc-block ${classMap(cardClassMap)}"
+        @click=${this._handleClick}
+        @dblclick=${this._handleDoubleClick}
+      >
+        <div class="affine-embed-linked-doc-content">
+          <div class="affine-embed-linked-doc-content-title">
+            <div class="affine-embed-linked-doc-content-title-icon">
+              ${icon ?? nothing}
+            </div>
+            <div class="affine-embed-linked-doc-content-title-text">
+              ${title ?? 'Untitled'}
+            </div>
+          </div>
+
+          <div class="metadata-info-grid">
+            ${rating
+              ? html`
+                  <div class="metadata-info-item">
+                    <div class="metadata-info-label">Rating</div>
+                    <div class="metadata-info-value metadata-rating-value">
+                      ${StarIcon()} <span>${rating}</span>
+                    </div>
+                  </div>
+                `
+              : nothing}
+            ${secondaryInfo?.value
+              ? html`
+                  <div class="metadata-info-item">
+                    <div class="metadata-info-label">
+                      ${secondaryInfo.label}
+                    </div>
+                    <div class="metadata-info-value">
+                      ${secondaryInfo.value}
+                    </div>
+                  </div>
+                `
+              : nothing}
+            ${config?.extraFields.map(field => {
+              const key = field.key as keyof typeof props;
+              const rawValue = props[key];
+              const value = field.formatter
+                ? field.formatter(rawValue, props)
+                : rawValue;
+              if (!value) return nothing;
+
+              return html`
+                <div class="metadata-info-item">
+                  <div class="metadata-info-label">${field.label}</div>
+                  <div class="metadata-info-value">${value}</div>
+                </div>
+              `;
+            })}
+          </div>
+        </div>
+
+        ${this._resolvedMetadataImage
+          ? html`
+              <div class="metadata-poster">
+                <img
+                  src="${this._resolvedMetadataImage}"
+                  alt="${this.docTitle}"
+                  @error=${(e: Event) => {
+                    // Hide broken images gracefully
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
+            `
+          : nothing}
+      </div>
+    `;
   };
 
   private readonly _trackCitationDeleteEvent = () => {
@@ -623,9 +853,24 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
   @property({ attribute: false })
   accessor isError = false;
 
+  @state()
+  private accessor _resolvedMetadataImage: string | null = null;
+
+  private _currentImageRef: string | null = null;
+
   @property({ attribute: false })
   accessor isNoteContentEmpty = false;
 
   @queryAsync('.affine-embed-linked-doc-content-note.render')
   accessor noteContainer!: Promise<HTMLDivElement | null>;
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    if (
+      this._resolvedMetadataImage?.startsWith('blob:') &&
+      this._resolvedMetadataImage !== this._currentImageRef
+    ) {
+      URL.revokeObjectURL(this._resolvedMetadataImage);
+    }
+  }
 }

@@ -1,0 +1,40 @@
+{
+  "name": "@blocksuite/affine-widget-metadata-card-picker",
+  "version": "0.26.1",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@blocksuite/affine-block-surface": "workspace:*",
+    "@blocksuite/affine-components": "workspace:*",
+    "@blocksuite/affine-ext-loader": "workspace:*",
+    "@blocksuite/affine-model": "workspace:*",
+    "@blocksuite/affine-rich-text": "workspace:*",
+    "@blocksuite/affine-shared": "workspace:*",
+    "@blocksuite/affine-widget-slash-menu": "workspace:*",
+    "@blocksuite/global": "workspace:*",
+    "@blocksuite/icons": "^2.2.17",
+    "@blocksuite/std": "workspace:*",
+    "@blocksuite/store": "workspace:*",
+    "@floating-ui/dom": "^1.6.13",
+    "@lit/context": "^1.1.2",
+    "@preact/signals-core": "^1.8.0",
+    "@toeverything/theme": "^1.1.23",
+    "@types/lodash-es": "^4.17.12",
+    "lit": "^3.2.0",
+    "lodash-es": "^4.17.23",
+    "zod": "^3.25.76"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./view": "./src/view.ts"
+  },
+  "files": [
+    "src",
+    "dist",
+    "!src/__tests__",
+    "!dist/__tests__"
+  ]
+}

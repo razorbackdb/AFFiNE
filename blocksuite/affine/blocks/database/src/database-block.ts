@@ -75,7 +75,7 @@ import { getSingleDocIdFromText } from './utils/title-doc.js';
 import type { DatabaseViewExtensionOptions } from './view';
 
 export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBlockModel> {
-  private readonly clickDatabaseOps = (e: MouseEvent) => {
+  protected readonly clickDatabaseOps = (e: MouseEvent) => {
     const options = this.optionsConfig.configure(this.model, {
       items: [
         menu.input({

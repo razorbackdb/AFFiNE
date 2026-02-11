@@ -49,7 +49,7 @@ export type AffineTextAttributes = AffineTextStyleAttributes & {
   link?: string | null;
   reference?:
     | ({
-        type: 'Subpage' | 'LinkedPage';
+        type: 'Subpage' | 'LinkedPage' | 'MetadataDoc';
       } & ReferenceInfo)
     | null;
   latex?: string | null;
@@ -57,6 +57,11 @@ export type AffineTextAttributes = AffineTextStyleAttributes & {
   mention?: {
     member: string;
     notification?: string;
+  } | null;
+  'metadata-card'?: {
+    type: 'movie' | 'tv' | 'game' | 'music' | 'book';
+    id: string;
+    title: string;
   } | null;
   [key: `comment-${string}`]: boolean | null;
 };

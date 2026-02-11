@@ -4,6 +4,7 @@ export * from './callout/index.js';
 export * from './code/index.js';
 export * from './database/index.js';
 export * from './divider/index.js';
+export * from './doc-library/index.js';
 export * from './edgeless-text/index.js';
 export * from './embed/index.js';
 export * from './frame/index.js';

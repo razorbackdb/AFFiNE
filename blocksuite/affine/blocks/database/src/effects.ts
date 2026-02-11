@@ -1,29 +1,38 @@
-import { CenterPeek } from './components/layout';
-import { DatabaseTitle } from './components/title';
-import { DatabaseBlockComponent } from './database-block';
-import { DatabaseDndPreviewBlockComponent } from './database-dnd-preview-block';
-import { BlockRenderer } from './detail-panel/block-renderer';
-import { NoteRenderer } from './detail-panel/note-renderer';
-import { CreatedTimeCell } from './properties/created-time/cell-renderer';
-import { LinkCell } from './properties/link/cell-renderer';
-import { RichTextCell } from './properties/rich-text/cell-renderer';
-import { IconCell } from './properties/title/icon';
-import { HeaderAreaTextCell } from './properties/title/text';
+import { CenterPeek } from './components/layout.js';
+import { DatabaseTitle } from './components/title/index.js';
+import { DatabaseBlockComponent } from './database-block.js';
+import { DatabaseDndPreviewBlockComponent } from './database-dnd-preview-block.js';
+import { BlockRenderer } from './detail-panel/block-renderer.js';
+import { NoteRenderer } from './detail-panel/note-renderer.js';
+import { CreatedTimeCell } from './properties/created-time/cell-renderer.js';
+import { DocMetadataCell } from './properties/doc-metadata/cell-renderer.js';
+import { DocMetadataSettingsBar } from './properties/doc-metadata/settings-bar.js';
+import { DocReferenceCell } from './properties/doc-reference/cell-renderer.js';
+import { LinkCell } from './properties/link/cell-renderer.js';
+import { RichTextCell } from './properties/rich-text/cell-renderer.js';
+import { IconCell } from './properties/title/icon.js';
+import { HeaderAreaTextCell } from './properties/title/text.js';
 
 export function effects() {
-  customElements.define('affine-database-title', DatabaseTitle);
-  customElements.define('data-view-header-area-icon', IconCell);
-  customElements.define('affine-database-link-cell', LinkCell);
-  customElements.define('data-view-header-area-text', HeaderAreaTextCell);
-  customElements.define('affine-database-rich-text-cell', RichTextCell);
-  customElements.define('affine-database-created-time-cell', CreatedTimeCell);
-  customElements.define('center-peek', CenterPeek);
-  customElements.define('database-datasource-note-renderer', NoteRenderer);
-  customElements.define('database-datasource-block-renderer', BlockRenderer);
-  customElements.define('affine-database', DatabaseBlockComponent);
+  const define = (name: string, constructor: CustomElementConstructor) => {
+    if (!customElements.get(name)) {
+      customElements.define(name, constructor);
+    }
+  };
 
-  customElements.define(
-    'affine-dnd-preview-database',
-    DatabaseDndPreviewBlockComponent
-  );
+  define('affine-database-title', DatabaseTitle);
+  define('data-view-header-area-icon', IconCell);
+  define('affine-database-link-cell', LinkCell);
+  define('affine-database-doc-reference-cell', DocReferenceCell);
+  define('affine-database-doc-metadata-cell', DocMetadataCell);
+  define('affine-database-doc-metadata-settings-bar', DocMetadataSettingsBar);
+  define('data-view-header-area-text', HeaderAreaTextCell);
+  define('affine-database-rich-text-cell', RichTextCell);
+  define('affine-database-created-time-cell', CreatedTimeCell);
+  define('center-peek', CenterPeek);
+  define('database-datasource-note-renderer', NoteRenderer);
+  define('database-datasource-block-renderer', BlockRenderer);
+  define('affine-database', DatabaseBlockComponent);
+
+  define('affine-dnd-preview-database', DatabaseDndPreviewBlockComponent);
 }

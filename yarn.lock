@@ -132,6 +132,7 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.0"
     css-loader: "npm:^7.1.2"
     cssnano: "npm:^7.0.6"
+    dotenv: "npm:^17.2.4"
     html-webpack-plugin: "npm:^5.6.3"
     inquirer: "npm:^12.3.0"
     jsonc-parser: "npm:^3.3.1"
@@ -2026,6 +2027,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@blocksuite/affine-block-doc-library@workspace:*, @blocksuite/affine-block-doc-library@workspace:blocksuite/affine/blocks/doc-library":
+  version: 0.0.0-use.local
+  resolution: "@blocksuite/affine-block-doc-library@workspace:blocksuite/affine/blocks/doc-library"
+  dependencies:
+    "@blocksuite/affine-block-database": "workspace:*"
+    "@blocksuite/affine-components": "workspace:*"
+    "@blocksuite/affine-ext-loader": "workspace:*"
+    "@blocksuite/affine-model": "workspace:*"
+    "@blocksuite/affine-shared": "workspace:*"
+    "@blocksuite/affine-widget-slash-menu": "workspace:*"
+    "@blocksuite/data-view": "workspace:*"
+    "@blocksuite/global": "workspace:*"
+    "@blocksuite/icons": "npm:^2.2.17"
+    "@blocksuite/std": "workspace:*"
+    "@blocksuite/store": "workspace:*"
+    "@emotion/css": "npm:^11.13.5"
+    "@preact/signals-core": "npm:^1.8.0"
+    "@toeverything/theme": "npm:^1.1.23"
+    lit: "npm:^3.2.0"
+    rxjs: "npm:^7.8.2"
+    yjs: "npm:^13.6.27"
+    zod: "npm:^3.25.76"
+  languageName: unknown
+  linkType: soft
+
 "@blocksuite/affine-block-edgeless-text@workspace:*, @blocksuite/affine-block-edgeless-text@workspace:blocksuite/affine/blocks/edgeless-text":
   version: 0.0.0-use.local
   resolution: "@blocksuite/affine-block-edgeless-text@workspace:blocksuite/affine/blocks/edgeless-text"
@@ -3060,6 +3086,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@blocksuite/affine-inline-metadata-doc-reference@workspace:blocksuite/affine/inlines/metadata-doc-reference":
+  version: 0.0.0-use.local
+  resolution: "@blocksuite/affine-inline-metadata-doc-reference@workspace:blocksuite/affine/inlines/metadata-doc-reference"
+  dependencies:
+    "@blocksuite/affine-components": "workspace:*"
+    "@blocksuite/affine-model": "workspace:*"
+    "@blocksuite/affine-shared": "workspace:*"
+    "@blocksuite/global": "workspace:*"
+    "@blocksuite/icons": "npm:^2.2.17"
+    "@blocksuite/std": "workspace:*"
+    "@blocksuite/store": "workspace:*"
+    lit: "npm:^3.2.0"
+    lodash-es: "npm:^4.17.23"
+  languageName: unknown
+  linkType: soft
+
 "@blocksuite/affine-inline-preset@workspace:*, @blocksuite/affine-inline-preset@workspace:blocksuite/affine/inlines/preset":
   version: 0.0.0-use.local
   resolution: "@blocksuite/affine-inline-preset@workspace:blocksuite/affine/inlines/preset"
@@ -3460,6 +3502,32 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@blocksuite/affine-widget-metadata-card-picker@workspace:*, @blocksuite/affine-widget-metadata-card-picker@workspace:blocksuite/affine/widgets/metadata-card-picker":
+  version: 0.0.0-use.local
+  resolution: "@blocksuite/affine-widget-metadata-card-picker@workspace:blocksuite/affine/widgets/metadata-card-picker"
+  dependencies:
+    "@blocksuite/affine-block-surface": "workspace:*"
+    "@blocksuite/affine-components": "workspace:*"
+    "@blocksuite/affine-ext-loader": "workspace:*"
+    "@blocksuite/affine-model": "workspace:*"
+    "@blocksuite/affine-rich-text": "workspace:*"
+    "@blocksuite/affine-shared": "workspace:*"
+    "@blocksuite/affine-widget-slash-menu": "workspace:*"
+    "@blocksuite/global": "workspace:*"
+    "@blocksuite/icons": "npm:^2.2.17"
+    "@blocksuite/std": "workspace:*"
+    "@blocksuite/store": "workspace:*"
+    "@floating-ui/dom": "npm:^1.6.13"
+    "@lit/context": "npm:^1.1.2"
+    "@preact/signals-core": "npm:^1.8.0"
+    "@toeverything/theme": "npm:^1.1.23"
+    "@types/lodash-es": "npm:^4.17.12"
+    lit: "npm:^3.2.0"
+    lodash-es: "npm:^4.17.23"
+    zod: "npm:^3.25.76"
+  languageName: unknown
+  linkType: soft
+
 "@blocksuite/affine-widget-note-slicer@workspace:*, @blocksuite/affine-widget-note-slicer@workspace:blocksuite/affine/widgets/note-slicer":
   version: 0.0.0-use.local
   resolution: "@blocksuite/affine-widget-note-slicer@workspace:blocksuite/affine/widgets/note-slicer"
@@ -3621,6 +3689,7 @@ __metadata:
     "@blocksuite/affine-block-data-view": "workspace:*"
     "@blocksuite/affine-block-database": "workspace:*"
     "@blocksuite/affine-block-divider": "workspace:*"
+    "@blocksuite/affine-block-doc-library": "workspace:*"
     "@blocksuite/affine-block-edgeless-text": "workspace:*"
     "@blocksuite/affine-block-embed": "workspace:*"
     "@blocksuite/affine-block-embed-doc": "workspace:*"
@@ -3671,6 +3740,7 @@ __metadata:
     "@blocksuite/affine-widget-frame-title": "workspace:*"
     "@blocksuite/affine-widget-keyboard-toolbar": "workspace:*"
     "@blocksuite/affine-widget-linked-doc": "workspace:*"
+    "@blocksuite/affine-widget-metadata-card-picker": "workspace:*"
     "@blocksuite/affine-widget-note-slicer": "workspace:*"
     "@blocksuite/affine-widget-page-dragging-area": "workspace:*"
     "@blocksuite/affine-widget-remote-selection": "workspace:*"
@@ -22734,6 +22804,13 @@ __metadata:
   version: 16.5.0
   resolution: "dotenv@npm:16.5.0"
   checksum: 10/e68a16834f1a41cc2dfb01563bc150668ad675e6cd09191211467b5c0806b6ecd6ec438e021aa8e01cd0e72d2b70ef4302bec7cc0fe15b6955f85230b62dc8a9
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^17.2.4":
+  version: 17.2.4
+  resolution: "dotenv@npm:17.2.4"
+  checksum: 10/3b0fdfb40aebfec3a3b4421990b5874cb93c5a259d20ef637ead237a360cbaf753879d3a66e5c044147658824d86ffead6a4090e8ebb727782e5717fcdb636dd
   languageName: node
   linkType: hard
 

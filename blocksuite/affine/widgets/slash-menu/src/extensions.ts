@@ -24,6 +24,7 @@ export class SlashMenuExtension extends Extension {
 
     di.add(this, [StdIdentifier]);
 
+    // Register default config
     SlashMenuConfigExtension('default', defaultSlashMenuConfig).setup(di);
   }
 

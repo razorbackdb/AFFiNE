@@ -5,6 +5,7 @@ import { CodeBlockViewExtension } from '@blocksuite/affine-block-code/view';
 import { DataViewViewExtension } from '@blocksuite/affine-block-data-view/view';
 import { DatabaseViewExtension } from '@blocksuite/affine-block-database/view';
 import { DividerViewExtension } from '@blocksuite/affine-block-divider/view';
+import { DocLibraryViewExtension } from '@blocksuite/affine-block-doc-library/view';
 import { EdgelessTextViewExtension } from '@blocksuite/affine-block-edgeless-text/view';
 import { EmbedViewExtension } from '@blocksuite/affine-block-embed/view';
 import { EmbedDocViewExtension } from '@blocksuite/affine-block-embed-doc/view';
@@ -49,6 +50,7 @@ import { EdgelessZoomToolbarViewExtension } from '@blocksuite/affine-widget-edge
 import { FrameTitleViewExtension } from '@blocksuite/affine-widget-frame-title/view';
 import { KeyboardToolbarViewExtension } from '@blocksuite/affine-widget-keyboard-toolbar/view';
 import { LinkedDocViewExtension } from '@blocksuite/affine-widget-linked-doc/view';
+import { MetadataCardPickerViewExtension } from '@blocksuite/affine-widget-metadata-card-picker/view';
 import { NoteSlicerViewExtension } from '@blocksuite/affine-widget-note-slicer/view';
 import { PageDraggingAreaViewExtension } from '@blocksuite/affine-widget-page-dragging-area/view';
 import { RemoteSelectionViewExtension } from '@blocksuite/affine-widget-remote-selection/view';
@@ -80,6 +82,7 @@ export function getInternalViewExtensions() {
     CodeBlockViewExtension,
     DataViewViewExtension,
     DatabaseViewExtension,
+    DocLibraryViewExtension,
     DividerViewExtension,
     EdgelessTextViewExtension,
     EmbedViewExtension,
@@ -111,6 +114,7 @@ export function getInternalViewExtensions() {
     FrameTitleViewExtension,
     KeyboardToolbarViewExtension,
     LinkedDocViewExtension,
+    MetadataCardPickerViewExtension,
     RemoteSelectionViewExtension,
     ScrollAnchoringViewExtension,
     SlashMenuViewExtension,

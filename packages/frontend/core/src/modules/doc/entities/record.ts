@@ -26,7 +26,7 @@ export class DocRecord extends Entity<{ id: string }> {
   );
 
   properties$ = LiveData.from<DocProperties>(
-    this.docPropertiesStore.watchDocProperties(this.id),
+    this.docPropertiesStore.watchDocProperties$(this.id),
     { id: this.id }
   );
 

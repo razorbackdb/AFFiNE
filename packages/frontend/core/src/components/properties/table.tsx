@@ -291,7 +291,43 @@ const WorkspaceWorkspacePropertiesTableBody = forwardRef<
     const workbenchService = useService(WorkbenchService);
     const viewService = useServiceOptional(ViewService);
     const docService = useService(DocService);
-    const properties = useLiveData(workspacePropertyService.sortedProperties$);
+    const allProperties = useLiveData(
+      workspacePropertyService.sortedProperties$
+    );
+
+    // Filter properties based on current doc's metadata
+    const docProperties = useLiveData(docService.doc.properties$);
+    const properties = useMemo(() => {
+      const docType = docProperties?.docType;
+      const mediaType = docProperties?.mediaType;
+
+      return allProperties.filter(property => {
+        const filter = property.visibilityFilter as
+          | { docType?: string | string[]; mediaType?: string | string[] }
+          | null
+          | undefined;
+        if (!filter || Object.keys(filter).length === 0) {
+          return true;
+        }
+
+        if (filter.docType) {
+          const match = Array.isArray(filter.docType)
+            ? filter.docType.includes(docType ?? '')
+            : filter.docType === docType;
+          if (!match) return false;
+        }
+
+        if (filter.mediaType) {
+          const match = Array.isArray(filter.mediaType)
+            ? filter.mediaType.includes(mediaType ?? '')
+            : filter.mediaType === mediaType;
+          if (!match) return false;
+        }
+
+        return true;
+      });
+    }, [allProperties, docProperties?.docType, docProperties?.mediaType]);
+
     const [addMoreCollapsed, setAddMoreCollapsed] = useState(true);
 
     const [newPropertyId, setNewPropertyId] = useState<string | null>(null);

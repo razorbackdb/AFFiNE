@@ -11,11 +11,9 @@ const defaultEmbedLinkedDocBlockProps: EmbedLinkedDocBlockProps = {
   pageId: '',
   style: EmbedLinkedDocStyles[1],
   caption: null,
-  // title & description aliases
+  footnoteIdentifier: null,
   title: undefined,
   description: undefined,
-
-  footnoteIdentifier: null,
 };
 
 export const EmbedLinkedDocBlockSchema = createEmbedBlockSchema({

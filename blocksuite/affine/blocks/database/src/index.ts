@@ -4,6 +4,7 @@ export * from './config';
 export * from './context';
 export * from './data-source';
 export * from './database-block';
+export * from './database-block-styles';
 export * from './detail-panel/block-renderer';
 export * from './detail-panel/note-renderer';
 export * from './properties';
@@ -11,4 +12,11 @@ export * from './properties/rich-text/cell-renderer';
 export * from './selection.js';
 export * from './service';
 export * from './utils/block-utils';
+export { currentViewStorage } from './utils/current-view.js';
+export { getSingleDocIdFromText } from './utils/title-doc';
+export {
+  databaseBlockViewConverts,
+  databaseBlockViewMap,
+  databaseBlockViews,
+} from './views/index.js';
 export * from '@blocksuite/data-view';

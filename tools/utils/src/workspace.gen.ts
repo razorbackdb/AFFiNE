@@ -12,6 +12,7 @@ export const PackageList = [
       'blocksuite/affine/blocks/data-view',
       'blocksuite/affine/blocks/database',
       'blocksuite/affine/blocks/divider',
+      'blocksuite/affine/blocks/doc-library',
       'blocksuite/affine/blocks/edgeless-text',
       'blocksuite/affine/blocks/embed',
       'blocksuite/affine/blocks/embed-doc',
@@ -62,6 +63,7 @@ export const PackageList = [
       'blocksuite/affine/widgets/frame-title',
       'blocksuite/affine/widgets/keyboard-toolbar',
       'blocksuite/affine/widgets/linked-doc',
+      'blocksuite/affine/widgets/metadata-card-picker',
       'blocksuite/affine/widgets/note-slicer',
       'blocksuite/affine/widgets/page-dragging-area',
       'blocksuite/affine/widgets/remote-selection',
@@ -188,6 +190,23 @@ export const PackageList = [
       'blocksuite/affine/model',
       'blocksuite/affine/rich-text',
       'blocksuite/affine/shared',
+      'blocksuite/framework/global',
+      'blocksuite/framework/std',
+      'blocksuite/framework/store',
+    ],
+  },
+  {
+    location: 'blocksuite/affine/blocks/doc-library',
+    name: '@blocksuite/affine-block-doc-library',
+    workspaceDependencies: [
+      'blocksuite/affine/blocks/database',
+      'blocksuite/affine/components',
+      'blocksuite/affine/ext-loader',
+      'blocksuite/affine/inlines/reference',
+      'blocksuite/affine/model',
+      'blocksuite/affine/shared',
+      'blocksuite/affine/widgets/slash-menu',
+      'blocksuite/affine/data-view',
       'blocksuite/framework/global',
       'blocksuite/framework/std',
       'blocksuite/framework/store',
@@ -796,6 +815,18 @@ export const PackageList = [
     ],
   },
   {
+    location: 'blocksuite/affine/inlines/metadata-doc-reference',
+    name: '@blocksuite/affine-inline-metadata-doc-reference',
+    workspaceDependencies: [
+      'blocksuite/affine/components',
+      'blocksuite/affine/model',
+      'blocksuite/affine/shared',
+      'blocksuite/framework/global',
+      'blocksuite/framework/std',
+      'blocksuite/framework/store',
+    ],
+  },
+  {
     location: 'blocksuite/affine/inlines/preset',
     name: '@blocksuite/affine-inline-preset',
     workspaceDependencies: [
@@ -1007,6 +1038,22 @@ export const PackageList = [
       'blocksuite/affine/model',
       'blocksuite/affine/rich-text',
       'blocksuite/affine/shared',
+      'blocksuite/framework/global',
+      'blocksuite/framework/std',
+      'blocksuite/framework/store',
+    ],
+  },
+  {
+    location: 'blocksuite/affine/widgets/metadata-card-picker',
+    name: '@blocksuite/affine-widget-metadata-card-picker',
+    workspaceDependencies: [
+      'blocksuite/affine/blocks/surface',
+      'blocksuite/affine/components',
+      'blocksuite/affine/ext-loader',
+      'blocksuite/affine/model',
+      'blocksuite/affine/rich-text',
+      'blocksuite/affine/shared',
+      'blocksuite/affine/widgets/slash-menu',
       'blocksuite/framework/global',
       'blocksuite/framework/std',
       'blocksuite/framework/store',
@@ -1511,6 +1558,7 @@ export type PackageName =
   | '@blocksuite/affine-block-data-view'
   | '@blocksuite/affine-block-database'
   | '@blocksuite/affine-block-divider'
+  | '@blocksuite/affine-block-doc-library'
   | '@blocksuite/affine-block-edgeless-text'
   | '@blocksuite/affine-block-embed'
   | '@blocksuite/affine-block-embed-doc'
@@ -1548,6 +1596,7 @@ export type PackageName =
   | '@blocksuite/affine-inline-latex'
   | '@blocksuite/affine-inline-link'
   | '@blocksuite/affine-inline-mention'
+  | '@blocksuite/affine-inline-metadata-doc-reference'
   | '@blocksuite/affine-inline-preset'
   | '@blocksuite/affine-inline-reference'
   | '@blocksuite/affine-model'
@@ -1562,6 +1611,7 @@ export type PackageName =
   | '@blocksuite/affine-widget-frame-title'
   | '@blocksuite/affine-widget-keyboard-toolbar'
   | '@blocksuite/affine-widget-linked-doc'
+  | '@blocksuite/affine-widget-metadata-card-picker'
   | '@blocksuite/affine-widget-note-slicer'
   | '@blocksuite/affine-widget-page-dragging-area'
   | '@blocksuite/affine-widget-remote-selection'

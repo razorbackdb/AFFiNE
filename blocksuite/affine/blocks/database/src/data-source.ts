@@ -5,7 +5,10 @@ import type {
   ParagraphBlockModel,
 } from '@blocksuite/affine-model';
 import { getSelectedModelsCommand } from '@blocksuite/affine-shared/commands';
-import { FeatureFlagService } from '@blocksuite/affine-shared/services';
+import {
+  DocPropertiesProviderIdentifier,
+  FeatureFlagService,
+} from '@blocksuite/affine-shared/services';
 import {
   insertPositionToIndex,
   type InsertToPosition,
@@ -28,6 +31,7 @@ import { type BlockModel } from '@blocksuite/store';
 import { computed, type ReadonlySignal, signal } from '@preact/signals-core';
 
 import { getIcon } from './block-icons.js';
+import { EditorHostKey } from './context/host-context.js';
 import {
   databaseBlockProperties,
   databasePropertyConverts,
@@ -265,7 +269,11 @@ export class DatabaseBlockDataSource extends DataSourceBase {
     });
   }
 
-  cellValueGet(rowId: string, propertyId: string): unknown {
+  cellValueGet(
+    rowId: string,
+    propertyId: string,
+    visited?: Set<string>
+  ): unknown {
     if (this.isSpacialProperty(propertyId)) {
       return this.spacialValueGet(rowId, propertyId, propertyId);
     }
@@ -276,6 +284,37 @@ export class DatabaseBlockDataSource extends DataSourceBase {
     if (this.isSpacialProperty(type)) {
       return this.spacialValueGet(rowId, propertyId, type);
     }
+
+    if (type === 'doc-metadata') {
+      const data = this.propertyDataGet(propertyId) as {
+        sourceColumnId?: string;
+        metadataKey?: string;
+      };
+      const { sourceColumnId, metadataKey } = data;
+      if (!sourceColumnId || !metadataKey) return null;
+      if (sourceColumnId === propertyId) return null;
+
+      const visitedSet = visited ?? new Set<string>();
+      if (visitedSet.has(propertyId)) return null;
+      visitedSet.add(propertyId);
+
+      if (visitedSet.has(sourceColumnId)) return null;
+
+      const docId = this.cellValueGet(rowId, sourceColumnId, visitedSet);
+      if (typeof docId !== 'string' || !docId) return null;
+
+      const host = this.serviceGet(EditorHostKey);
+      const provider = host?.std.getOptional(DocPropertiesProviderIdentifier);
+      if (!provider) return null;
+
+      const props = provider.getDocProperties(docId);
+      if (metadataKey === 'year' && typeof props?.releaseDate === 'string') {
+        const year = parseInt(props.releaseDate.substring(0, 4));
+        return isNaN(year) ? null : year;
+      }
+      return props?.[metadataKey] ?? null;
+    }
+
     const meta = this.propertyMetaGet(type);
     if (!meta) {
       return;
@@ -480,6 +519,8 @@ export class DatabaseBlockDataSource extends DataSourceBase {
 
   override propertyReadonlyGet(propertyId: string): boolean {
     if (propertyId === 'type') return true;
+    const type = this.propertyTypeGet(propertyId);
+    if (type === 'doc-metadata') return true;
     return false;
   }
 

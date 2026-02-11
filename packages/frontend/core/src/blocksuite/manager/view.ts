@@ -18,6 +18,8 @@ import {
 import { ElectronViewExtension } from '@affine/core/blocksuite/view-extensions/electron';
 import { AffineIconPickerExtension } from '@affine/core/blocksuite/view-extensions/icon-picker';
 import { AffineLinkPreviewExtension } from '@affine/core/blocksuite/view-extensions/link-preview-service';
+import { MetadataDocViewExtension } from '@affine/core/blocksuite/view-extensions/metadata-doc';
+import { MetadataServiceViewExtension } from '@affine/core/blocksuite/view-extensions/metadata-service';
 import { MobileViewExtension } from '@affine/core/blocksuite/view-extensions/mobile';
 import { PdfViewExtension } from '@affine/core/blocksuite/view-extensions/pdf';
 import { AffineThemeViewExtension } from '@affine/core/blocksuite/view-extensions/theme';
@@ -35,8 +37,9 @@ import { ViewExtensionManager } from '@blocksuite/affine/ext-loader';
 import { getInternalViewExtensions } from '@blocksuite/affine/extensions/view';
 import { FoundationViewExtension } from '@blocksuite/affine/foundation/view';
 import { InlineCommentViewExtension } from '@blocksuite/affine/inlines/comment';
-import { AffineCanvasTextFonts } from '@blocksuite/affine/shared/services';
 import { LinkedDocViewExtension } from '@blocksuite/affine/widgets/linked-doc/view';
+import { AffineCanvasTextFonts } from '@blocksuite/affine-shared/services';
+import { MetadataCardPickerViewExtension } from '@blocksuite/affine-widget-metadata-card-picker';
 import type { FrameworkProvider } from '@toeverything/infra';
 import type { TemplateResult } from 'lit';
 
@@ -64,6 +67,9 @@ type Configure = {
     enableComment?: boolean,
     framework?: FrameworkProvider
   ) => Configure;
+  metadataCardPicker: () => Configure;
+  metadataService: () => Configure;
+  metadataDoc: (framework?: FrameworkProvider) => Configure;
 
   value: ViewExtensionManager;
 };
@@ -100,6 +106,8 @@ class ViewProvider {
       AffineLinkPreviewExtension,
       AffineDatabaseViewExtension,
       CommentViewExtension,
+      MetadataDocViewExtension,
+      MetadataServiceViewExtension,
     ]);
   }
 
@@ -128,6 +136,9 @@ class ViewProvider {
       codeBlockPreview: this._configureCodeBlockHtmlPreview,
       iconPicker: this._configureIconPicker,
       comment: this._configureComment,
+      metadataCardPicker: this._configureMetadataCardPicker,
+      metadataService: this._configureMetadataService,
+      metadataDoc: this._configureMetadataDoc,
       value: this._manager,
     };
   }
@@ -151,7 +162,10 @@ class ViewProvider {
       .linkPreview()
       .codeBlockPreview()
       .iconPicker()
-      .comment();
+      .comment()
+      .metadataCardPicker()
+      .metadataService()
+      .metadataDoc();
 
     return this.config;
   };
@@ -356,6 +370,23 @@ class ViewProvider {
       enabled: enableComment,
     });
 
+    return this.config;
+  };
+
+  private readonly _configureMetadataCardPicker = () => {
+    this._manager.configure(MetadataCardPickerViewExtension, undefined);
+    return this.config;
+  };
+
+  private readonly _configureMetadataService = () => {
+    this._manager.configure(MetadataServiceViewExtension, undefined);
+    return this.config;
+  };
+
+  private readonly _configureMetadataDoc = (framework?: FrameworkProvider) => {
+    this._manager.configure(MetadataDocViewExtension, {
+      framework,
+    });
     return this.config;
   };
 }

@@ -9,6 +9,7 @@ import {
   EmbedIframeBlockSchemaExtension,
   EmbedLinkedDocBlockSchemaExtension,
   EmbedLoomBlockSchemaExtension,
+  EmbedMetadataCardBlockSchemaExtension,
   EmbedSyncedDocBlockSchemaExtension,
   EmbedYoutubeBlockSchemaExtension,
 } from '@blocksuite/affine-model';
@@ -29,6 +30,7 @@ export class EmbedStoreExtension extends StoreExtensionProvider {
     context.register([
       EmbedSyncedDocBlockSchemaExtension,
       EmbedLinkedDocBlockSchemaExtension,
+      EmbedMetadataCardBlockSchemaExtension,
       EmbedHtmlBlockSchemaExtension,
       EmbedIframeBlockSchemaExtension,
       EmbedGithubBlockSchemaExtension,

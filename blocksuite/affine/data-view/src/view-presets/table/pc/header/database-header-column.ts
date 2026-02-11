@@ -210,6 +210,19 @@ export class DatabaseHeaderColumn extends SignalWatcher(
         items: [
           inputConfig(this.column),
           typeConfig(this.column),
+          // Metadata Settings begin
+          menu.group({
+            items: [
+              menu.subMenu({
+                name: 'Metadata Settings',
+                hide: () => this.column.type$.value !== 'doc-metadata',
+                options: {
+                  items: [metadataSettingsConfig(this.column)],
+                },
+              }),
+            ],
+          }),
+          // Metadata Settings end
           // Number format begin
           menu.subMenu({
             name: 'Number Format',
@@ -483,6 +496,13 @@ function numberFormatConfig(column: Property): MenuConfig {
     html` <affine-database-number-format-bar
       .column="${column}"
     ></affine-database-number-format-bar>`;
+}
+
+function metadataSettingsConfig(column: Property): MenuConfig {
+  return () =>
+    html` <affine-database-doc-metadata-settings-bar
+      .column="${column}"
+    ></affine-database-doc-metadata-settings-bar>`;
 }
 
 declare global {

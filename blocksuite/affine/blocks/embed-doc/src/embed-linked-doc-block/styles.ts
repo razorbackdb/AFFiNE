@@ -342,6 +342,73 @@ export const styles = css`
       display: none !important;
     }
   }
+
+  /* Metadata Doc Specialized Styles */
+  .metadata-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+    margin-top: 4px;
+    flex: 1;
+  }
+
+  .metadata-info-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .metadata-info-label {
+    font-size: 10px;
+    color: ${unsafeCSSVarV2('text/secondary')};
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+  }
+
+  .metadata-info-value {
+    font-size: 12px;
+    color: ${unsafeCSSVarV2('text/primary')};
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .metadata-rating-value {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: ${unsafeCSSVarV2('text/primary')};
+  }
+
+  .metadata-poster {
+    width: 64px !important;
+    min-width: 64px !important;
+    height: 92px !important;
+    margin: 12px 12px 12px 0 !important;
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .metadata-poster img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: ${unsafeCSSVarV2('layer/background/secondary')};
+  }
+
+  .affine-embed-linked-doc-block.vertical .metadata-poster {
+    width: 120px !important;
+    height: 180px !important;
+    margin: 12px 0 !important;
+    align-self: center;
+  }
 `;
 
 export const LinkedDocDeletedIcon = html`<svg

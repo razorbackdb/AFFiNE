@@ -31,6 +31,15 @@ export const AFFiNE_WORKSPACE_DB_SCHEMA = {
     integrationType: integrationType.optional(),
     createdBy: f.string().optional(),
     updatedBy: f.string().optional(),
+    // Metadata document properties
+    docType: f.string().optional(),
+    mediaType: f.string().optional(),
+    externalId: f.string().optional(),
+    externalSource: f.string().optional(),
+    lastRefreshed: f.string().optional(),
+    title: f.string().optional(),
+    image: f.string().optional(),
+    imageUrl: f.string().optional(),
   }),
   docCustomPropertyInfo: {
     id: f.string().primaryKey().optional().default(nanoid),
@@ -40,6 +49,7 @@ export const AFFiNE_WORKSPACE_DB_SCHEMA = {
     index: f.string().optional(),
     icon: f.string().optional(),
     additionalData: f.json().optional(),
+    visibilityFilter: f.json().optional(), // { docType?: string, mediaType?: string }
     isDeleted: f.boolean().optional(),
     // we will keep deleted properties in the database, for override legacy data
   },

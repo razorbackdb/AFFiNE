@@ -40,35 +40,72 @@ export class DocPropertiesStore extends Store {
     };
   }
 
-  watchDocProperties(id: string) {
-    return combineLatest([
-      this.watchLegacyDocProperties(id).pipe(
-        map(this.upgradeLegacyDocProperties)
-      ),
-      this.dbService.db.docProperties.get$(id),
-    ]).pipe(
-      map(
-        ([legacy, db]) =>
-          ({
-            ...legacy,
-            ...omitBy(db, isNil), // db always override legacy, but nil value should not override
-          }) as DocProperties
-      )
-    );
+  private readonly _docWatchCache = new Map<string, LiveData<DocProperties>>();
+
+  watchDocProperties$(id: string) {
+    let cached$ = this._docWatchCache.get(id);
+    if (!cached$) {
+      cached$ = LiveData.from(
+        combineLatest([
+          this.watchLegacyDocProperties(id).pipe(
+            map(this.upgradeLegacyDocProperties)
+          ),
+          this.dbService.db.docProperties.get$(id),
+        ]).pipe(
+          map(
+            ([legacy, db]) =>
+              ({
+                ...legacy,
+                ...omitBy(db, isNil), // db always override legacy, but nil value should not override
+              }) as DocProperties
+          )
+        ),
+        {} as DocProperties
+      );
+      this._docWatchCache.set(id, cached$);
+    }
+    return cached$;
   }
+
+  findDocsByExternalId(mediaType: string, externalId: string) {
+    return this.dbService.db.docProperties.find({
+      mediaType,
+      externalId,
+      docType: 'metadata-doc',
+    });
+  }
+
+  clearCache() {
+    this._docWatchCache.clear();
+    this._propertyWatchCache.clear();
+  }
+
+  override dispose() {
+    this.clearCache();
+  }
+
+  private readonly _propertyWatchCache = new Map<
+    string,
+    LiveData<Map<string, string | undefined>>
+  >();
 
   /**
    * find doc ids by property key and value
    *
    * this apis will not include legacy properties
    */
-  watchPropertyAllValues(propertyKey: string) {
-    return LiveData.from<Map<string, string | undefined>>(
-      this.dbService.db.docProperties
-        .select$(propertyKey)
-        .pipe(map(o => new Map(o.map(i => [i.id, i[propertyKey]])))),
-      new Map()
-    );
+  watchPropertyAllValues$(propertyKey: string) {
+    let cached$ = this._propertyWatchCache.get(propertyKey);
+    if (!cached$) {
+      cached$ = LiveData.from<Map<string, string | undefined>>(
+        this.dbService.db.docProperties
+          .select$(propertyKey)
+          .pipe(map(o => new Map(o.map(i => [i.id, i[propertyKey]])))),
+        new Map()
+      );
+      this._propertyWatchCache.set(propertyKey, cached$);
+    }
+    return cached$;
   }
 
   private upgradeLegacyDocProperties(properties?: LegacyDocProperties) {

@@ -34,6 +34,8 @@ export const ReferenceInlineSpecExtension =
               // @deprecated Subpage is deprecated, use LinkedPage instead
               'Subpage',
               'LinkedPage',
+              // MetadataDoc references point to documents created from metadata cards
+              'MetadataDoc',
             ]),
           })
           .merge(ReferenceInfoSchema)

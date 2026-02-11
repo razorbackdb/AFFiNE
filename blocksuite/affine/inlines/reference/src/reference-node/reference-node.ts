@@ -15,7 +15,7 @@ import {
   cloneReferenceInfo,
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
-import { WithDisposable } from '@blocksuite/global/lit';
+import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { LinkedPageIcon } from '@blocksuite/icons/lit';
 import type { BlockComponent, BlockStdScope } from '@blocksuite/std';
 import { BLOCK_ID_ATTR, ShadowlessElement } from '@blocksuite/std';
@@ -37,7 +37,9 @@ import { RefNodeSlotsProvider } from './reference-node-slots';
 import type { DocLinkClickedEvent } from './types';
 
 @Peekable({ action: false })
-export class AffineReference extends WithDisposable(ShadowlessElement) {
+export class AffineReference extends SignalWatcher(
+  WithDisposable(ShadowlessElement)
+) {
   static override styles = css`
     .affine-reference {
       white-space: normal;
@@ -262,6 +264,8 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
               'user-select:none;flex-shrink:0;vertical-align:middle;font-size:inherit;margin-bottom:0.1em;',
           }),
       ],
+      // MetadataDoc type: now handled automatically by DocDisplayMetaProvider
+      ['MetadataDoc', () => this._icon],
     ]);
 
     const style = affineTextStyles(

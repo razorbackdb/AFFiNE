@@ -39,6 +39,9 @@ import { configureIntegrationModule } from './integration';
 import { configureJournalModule } from './journal';
 import { configureLifecycleModule } from './lifecycle';
 import { configureMediaModule } from './media';
+// Import workspace first to ensure WorkspaceInitialized is available
+// before metadata-doc tries to use it
+import { configureMetadataDocModule } from './metadata-doc';
 import { configureNavigationModule } from './navigation';
 import { configureNavigationPanelModule } from './navigation-panel';
 import { configureNotificationModule } from './notification';
@@ -127,6 +130,7 @@ export function configureCommonModules(framework: Framework) {
   configureIntegrationModule(framework);
   configureWorkspacePropertyModule(framework);
   configureCollectionRulesModule(framework);
+  configureMetadataDocModule(framework);
   configureIndexerEmbeddingModule(framework);
   configureCommentModule(framework);
   configureDocSummaryModule(framework);
