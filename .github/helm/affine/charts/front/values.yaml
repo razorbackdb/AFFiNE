@@ -29,6 +29,9 @@ podSecurityContext:
   fsGroup: 2000
 
 resources:
+  limits:
+    cpu: '1'
+    memory: 2Gi
   requests:
     cpu: '1'
     memory: 2Gi
@@ -53,6 +56,9 @@ services:
     name: affine-web
     type: ClusterIP
     port: 8080
+    annotations: {}
+  doc:
+    type: ClusterIP
     annotations: {}
 
 nodeSelector: {}
