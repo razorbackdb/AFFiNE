@@ -1,6 +1,6 @@
-import { DocPropertiesStore } from '@affine/core/modules/doc/stores/doc-properties';
 import { DocPropertiesProviderIdentifier } from '@blocksuite/affine-shared/services';
 import type { ExtensionType } from '@blocksuite/store';
+import { DocPropertiesStore } from '@affine/core/modules/doc/stores/doc-properties';
 import type { FrameworkProvider } from '@toeverything/infra';
 
 export function DocPropertiesProviderExtension(options: {

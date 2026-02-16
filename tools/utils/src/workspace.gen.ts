@@ -1405,6 +1405,7 @@ export const PackageList = [
       'blocksuite/affine/blocks/root',
       'blocksuite/affine/components',
       'blocksuite/affine/shared',
+      'blocksuite/affine/widgets/metadata-card-picker',
       'blocksuite/framework/global',
       'blocksuite/framework/std',
       'packages/common/infra',
