@@ -134,7 +134,6 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.0"
     css-loader: "npm:^7.1.2"
     cssnano: "npm:^7.0.6"
-    dotenv: "npm:^17.2.4"
     html-webpack-plugin: "npm:^5.6.3"
     inquirer: "npm:^12.3.0"
     jsonc-parser: "npm:^3.3.1"
@@ -411,6 +410,7 @@ __metadata:
     "@blocksuite/affine-components": "workspace:*"
     "@blocksuite/affine-ext-loader": "workspace:*"
     "@blocksuite/affine-shared": "workspace:*"
+    "@blocksuite/affine-widget-metadata-card-picker": "workspace:^"
     "@blocksuite/global": "workspace:*"
     "@blocksuite/icons": "npm:^2.2.17"
     "@blocksuite/std": "workspace:*"
@@ -2039,6 +2039,7 @@ __metadata:
     "@blocksuite/affine-block-database": "workspace:*"
     "@blocksuite/affine-components": "workspace:*"
     "@blocksuite/affine-ext-loader": "workspace:*"
+    "@blocksuite/affine-inline-reference": "workspace:^"
     "@blocksuite/affine-model": "workspace:*"
     "@blocksuite/affine-shared": "workspace:*"
     "@blocksuite/affine-widget-slash-menu": "workspace:*"
@@ -3151,7 +3152,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@blocksuite/affine-inline-reference@workspace:*, @blocksuite/affine-inline-reference@workspace:blocksuite/affine/inlines/reference":
+"@blocksuite/affine-inline-reference@workspace:*, @blocksuite/affine-inline-reference@workspace:^, @blocksuite/affine-inline-reference@workspace:blocksuite/affine/inlines/reference":
   version: 0.0.0-use.local
   resolution: "@blocksuite/affine-inline-reference@workspace:blocksuite/affine/inlines/reference"
   dependencies:
@@ -3510,7 +3511,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@blocksuite/affine-widget-metadata-card-picker@workspace:*, @blocksuite/affine-widget-metadata-card-picker@workspace:blocksuite/affine/widgets/metadata-card-picker":
+"@blocksuite/affine-widget-metadata-card-picker@workspace:*, @blocksuite/affine-widget-metadata-card-picker@workspace:^, @blocksuite/affine-widget-metadata-card-picker@workspace:blocksuite/affine/widgets/metadata-card-picker":
   version: 0.0.0-use.local
   resolution: "@blocksuite/affine-widget-metadata-card-picker@workspace:blocksuite/affine/widgets/metadata-card-picker"
   dependencies:
@@ -23173,13 +23174,6 @@ __metadata:
   version: 16.5.0
   resolution: "dotenv@npm:16.5.0"
   checksum: 10/e68a16834f1a41cc2dfb01563bc150668ad675e6cd09191211467b5c0806b6ecd6ec438e021aa8e01cd0e72d2b70ef4302bec7cc0fe15b6955f85230b62dc8a9
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^17.2.4":
-  version: 17.2.4
-  resolution: "dotenv@npm:17.2.4"
-  checksum: 10/3b0fdfb40aebfec3a3b4421990b5874cb93c5a259d20ef637ead237a360cbaf753879d3a66e5c044147658824d86ffead6a4090e8ebb727782e5717fcdb636dd
   languageName: node
   linkType: hard
 
